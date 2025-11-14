@@ -17,7 +17,7 @@ export function LandingPage(){
         <div className="bg-primary-dark font-sans antialiased text-white">
             <Header /> 
             
-            <HeroSection /> 
+            <HeroSection/> 
             <PurposeSection />
             <AboutCordobaSection />
             <AboutUsCordobaSection />

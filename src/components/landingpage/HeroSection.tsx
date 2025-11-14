@@ -1,5 +1,6 @@
 // src/components/landingpage/HeroSection.tsx
 import React from 'react';
+import ButtonRedirect from './ButtonRedirect';
 
 export function HeroSection() {
     return (
@@ -46,7 +47,10 @@ export function HeroSection() {
                 <p className="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-tight text-accent-yellow">
                     Você recupera crédito com inteligência, agilidade e segurança.
                 </p>
+                <br />
+                <br />
             </div>
+            <ButtonRedirect />
         </main>
     );
 }
