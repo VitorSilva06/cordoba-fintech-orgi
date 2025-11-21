@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 
 // Importar o logo (ajuste o caminho se necessário)
 import logoCordoba from '../../assets/logoCordobaSemFundo.png'; 
+import { href } from "react-router-dom";
 
 // Função auxiliar para combinar classes CSS, evitando repetições desnecessárias
 const classNames = (...classes) => classes.filter(Boolean).join(' ');
@@ -14,6 +15,7 @@ export function Header() {
     // Lista de itens de navegação (Ajuste os hrefs para os IDs das suas seções)
     const navItems = [
         { name: 'HOME', href: '#home', current: true },
+        { name: 'LOGIN', href: 'https://pace-bacon-15036285.figma.site/', current: false},
         { name: 'SOBRE', href: '#about-purpose', current: false }, 
         { name: 'START', href: '#start-section', current: false }, 
         { name: 'SOLUÇÕES', href: '#solutions', current: false },
@@ -52,7 +54,7 @@ export function Header() {
                         {/* Menu Horizontal (Desktop - Hidden em mobile) */}
                         <div className="hidden lg:flex flex-1 items-center justify-between">
                             {/* Logo à esquerda na navegação desktop */}
-                            <img src={logoCordoba} alt="Logotipo Córdoba Fintech" className="h-8 mr-6" /> 
+                            <img src={logoCordoba} alt="Logotipo Córdoba Fintech" className="h-14 mr-15" /> 
                             
                             <div className="flex space-x-6">
                                 {navItems.map((item) => (

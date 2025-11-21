@@ -4,7 +4,7 @@ import { Upload, CheckCircle, MessageSquare, CreditCard, BarChart } from 'lucide
 
 export function ComoFazemosSection() {
     
-    // Dados para os passos do processo (Baseado em image_4ae8ed.png)
+    // Dados para os passos do processo (Mantidos, pois são a estrutura do processo)
     const steps = [
         { 
             icon: Upload, 
@@ -33,36 +33,35 @@ export function ComoFazemosSection() {
         <section className="bg-primary-dark py-16 md:py-32 text-white relative">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 
-                {/* Título Principal */}
+                {/* Título Principal (Mantido em Maiúsculas e Grande - text-6xl) */}
                 <header className="mb-12 md:mb-16">
-                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-accent-yellow mb-4">
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-accent-yellow mb-4 uppercase">
                         Como fazemos
                     </h2>
                 </header>
                 
-                {/* Introdução (Corpo de Texto - image_4ae8ed.png) */}
-                <div className="space-y-6 text-lg md:text-xl font-light leading-relaxed">
+                {/* Introdução (Tipografia Padrão: Removidas classes 'Artificiais' e Traços) */}
+                <div className="space-y-6 text-2x1 md:text-2xl  leading-relaxed">
                     <p>
-                        nós transformamos o processo de cobrança em um fluxo <span className="font-bold text-neon-blue">automático, digital e inteligente.</span>
+                        Nós transformamos o processo de cobrança em um fluxo <span className="font-bold text-neon-blue">automático, digital e inteligente.</span>
                     </p>
                     <p>
-                        Conectamos <span className="font-bold text-accent-yellow">tecnologia, dados e comportamento</span> para gerir toda a sua carteira de inadimplentes — desde o primeiro contato até o pagamento efetivo — <span className="font-bold text-neon-blue">sem esforço manual, sem planilhas e sem complicação.</span>
+                        Conectamos <span className="font-bold text-accent-yellow">tecnologia, dados e comportamento</span> para gerir toda a sua carteira de inadimplentes desde o primeiro contato até o pagamento efetivo, <span className="font-bold text-neon-blue">sem esforço manual, sem planilhas e sem complicação.</span>
                     </p>
                     <p>
                         A nossa plataforma realiza <span className="font-bold text-neon-blue">toda a jornada de recuperação de crédito de forma integrada</span>:
                     </p>
                 </div>
 
-                {/* Lista de Passos (image_4ae8ed.png) */}
+                {/* Lista de Passos (Mantida em formato de lista simples) */}
                 <div className="mt-12 md:mt-16 max-w-4xl">
                     <ul className="space-y-8">
                         {steps.map((step, index) => (
                             <li key={index} className="flex items-start space-x-4">
-                                {/* Ícone de Destaque (Arrow/Triângulo, simulado com a cor neon-blue) */}
+                                {/* Ícone de Destaque */}
                                 <step.icon className="w-8 h-8 flex-shrink-0 mt-1 text-neon-blue" />
                                 
                                 <span className="text-xl md:text-2xl font-medium leading-snug">
-                                    {/* O texto é citado diretamente das setas da imagem */}
                                     {step.text}
                                 </span>
                             </li>
@@ -70,7 +69,7 @@ export function ComoFazemosSection() {
                     </ul>
                 </div>
 
-                {/* Conclusão/Garantia (image_4ae8ed.png) */}
+                {/* Conclusão/Garantia (Capitalização do início da frase corrigida) */}
                 <div className="mt-16 pt-8 border-t border-neon-blue/50">
                     <p className="text-xl md:text-2xl font-extrabold leading-snug text-white">
                         Tudo isso com <span className="text-accent-yellow">IA de aprendizado, criptografia total</span>, e uma <span className="text-accent-yellow">operação 100% em conformidade com a LGPD.</span>

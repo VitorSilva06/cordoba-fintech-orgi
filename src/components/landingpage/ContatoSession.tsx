@@ -21,8 +21,8 @@ export function ContatoSession() {
                             
                             {/* Título Principal */}
                             <header className="mb-8">
-                                <h2 className="text-4xl font-extrabold text-primary-dark tracking-tighter">
-                                    CORDOBA
+                                <h2 className="text-4xl font-extrabold text-primary-dark tracking-tighter uppercase">
+                                    CÓRDOBA
                                 </h2>
                                 <p className="text-lg font-semibold border-b-2 border-primary-dark pb-1 inline-block">
                                     INTELIGÊNCIA EM RECUPERAÇÃO DE CRÉDITO
@@ -47,7 +47,7 @@ export function ContatoSession() {
                                 <div className="flex items-center space-x-2 text-primary-dark font-bold">
                                     {/* MUDANÇA: Ajuste no tamanho do ícone para evitar quebra de linha */}
                                     <Mail className="w-6 h-6 flex-shrink-0" /> 
-                                    <span className="break-words">SUCESSO.CLIENTE@NUMY.COM.BR</span>
+                                    <span className="break-words">comercial@cordoba.com.br</span>
                                 </div>
                                 <div className="flex items-center space-x-2 text-primary-dark font-bold">
                                     <Phone className="w-6 h-6 flex-shrink-0" />

@@ -9,14 +9,14 @@ export function AboutCordobaSection() {
         <section 
             // Fundo Primário (Roxo Profundo) - Consistente com Header/Hero
             className="bg-primary-dark py-16 md:py-32 text-white relative"
-            id="start-section" 
+            id="start-section"
         >
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 uppercase">
                 
                 {/* 1. Título e Subtítulo (Limpos e Centrais) */}
                 <header className="mb-20 text-center">
-                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-accent-yellow mb-2">
-                        ENTENDA A CORDOBA
+                    <h2 className="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-accent-yellow mb-2 uppercase">
+                        ENTENDA A CÓRDOBA
                     </h2>
                 </header>
                 
@@ -25,16 +25,16 @@ export function AboutCordobaSection() {
                     
                     {/* Coluna 1: Bloco de Texto (Ocupa 2/5) */}
                     <div 
+                        // Em telas pequenas, ocupa 5 colunas (largura total). Em md, ocupa 2/5.
                         className="md:col-span-2 p-8 md:p-10 
-                                   // Estilo Flutuante e Elegante (Harmoniza com cartões do Hero)
-                                   bg-white/5 backdrop-blur-md rounded-2xl 
-                                   border-l-4 border-accent-yellow shadow-xl shadow-accent-yellow/10 
-                                   transform transition duration-500 hover:scale-[1.03] space-y-8"
+                                     bg-white/5 backdrop-blur-md rounded-2xl 
+                                     border-l-4 border-accent-yellow shadow-xl shadow-accent-yellow/10 
+                                     transform transition duration-500 hover:scale-[1.03] space-y-8"
                     >
                         
                         {/* Parágrafo 1: Definição */}
                         <p className="text-xl sm:text-2xl font-light leading-relaxed">
-                            A CORDOBA é uma <span className="text-accent-yellow font-bold">gerente digital e operacional</span>, que realiza o gerenciamento de toda a carteira de inadimplentes das empresas.
+                            A CÓRDOBA é uma <span className="text-accent-yellow font-bold">gerente digital e operacional</span>, que realiza o gerenciamento de toda a carteira de inadimplentes das empresas.
                         </p>
                         
                         {/* Parágrafo 2: Benefício */}
@@ -45,12 +45,16 @@ export function AboutCordobaSection() {
                     </div>
 
                     {/* Coluna 2: Imagem (Ocupa 3/5 - Maior e Destacada) */}
-                    <div className="md:col-span-3 flex justify-center md:justify-end">
+                    <div 
+                        // Em telas pequenas, ocupa 5 colunas (largura total). Em md, ocupa 3/5.
+                        className="md:col-span-3 flex justify-center md:justify-end"
+                    >
                         <img 
                             src={sistemaGerenciamento} 
                             alt="Ilustração de uma gerente digital e operacional" 
-                            // Borda neon-blue (para coesão com detalhes do Hero)
-                            className="w-full max-w-xl h-auto rounded-3xl border-2 border-neon-blue/40 shadow-2xl shadow-neon-blue/20 transition duration-500 hover:shadow-neon-blue/50"
+                            // w-full garante que ela se adapte ao contêiner.
+                            // max-w-3xl limita o tamanho máximo para não esticar demais em telas muito grandes.
+                            className="w-full max-w-3xl h-auto rounded-3xl border-2 border-neon-blue/40 shadow-2xl shadow-neon-blue/20 transition duration-500 hover:shadow-neon-blue/50"
                         />
                     </div>
                 </div>
