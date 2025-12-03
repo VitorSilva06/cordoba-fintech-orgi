@@ -3,6 +3,7 @@ import { Login } from "../pages/Login";
 import { Home } from "../pages/Home";
 // Importe o componente LandingPage que contém o Header e o PurposeSection
 import { LandingPage } from "../pages/LandingPage"; // Ajuste o caminho se necessário
+import { Register } from "../components/login/Register";
 
 
 export function AppRoutes(){
@@ -17,6 +18,7 @@ export function AppRoutes(){
             {/* Páginas do Aplicativo Logado */}
             <Route path="/home" element={<Home/>} />
             <Route path="/login" element={<Login/>} />
+            <Route path="/register" element={<Register/>}/>
         </Routes>
     )
 }

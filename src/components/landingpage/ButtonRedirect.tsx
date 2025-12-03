@@ -20,9 +20,9 @@ function ButtonRedirect() {
         inline-block 
         text-center
       "
-      href="https://pace-bacon-15036285.figma.site/"
       target="_blank"
       rel="noopener noreferrer"
+      href='/login'
     >
       Solicite uma demonstração
     </a>
