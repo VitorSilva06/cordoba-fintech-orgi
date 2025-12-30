@@ -1,0 +1,13 @@
+export { Navbar } from './Navbar';
+export { Hero } from './Hero';
+export { MissionVision } from './MissionVision';
+export { About } from './About';
+export { AboutUs } from './AboutUs';
+export { WhoWeServe } from './WhoWeServe';
+export { HowWeDoIt } from './HowWeDoIt';
+export { Platform } from './Platform';
+export { Technology } from './Technology';
+export { Solutions } from './Solutions';
+export { WhyCordoba } from './WhyCordoba';
+export { CTA } from './CTA';
+export { Footer } from './Footer';

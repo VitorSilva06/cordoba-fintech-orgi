@@ -1,0 +1,88 @@
+backend/
+├── main.py                    # Ponto de entrada da aplicação
+├── requirements.txt           # Dependências do projeto
+├── .env.example              # Exemplo de variáveis de ambiente
+├── .gitignore                # Arquivos ignorados pelo Git
+│
+├── app/                      # Módulo principal da aplicação
+│   ├── api/                  # Camada de API
+│   │   ├── routes/           # Rotas/endpoints
+│   │   │   ├── auth.py       # Autenticação
+│   │   │   ├── users.py      # Usuários
+│   │   │   ├── dashboard.py  # Dashboards
+│   │   │   ├── payments.py   # Pagamentos
+│   │   │   ├── communication.py # WhatsApp/Voz
+│   │   │   ├── segmentation.py  # Segmentação
+│   │   │   └── base.py       # Upload de bases
+│   │   ├── dependencies/     # Injeção de dependências
+│   │   │   ├── auth.py
+│   │   │   └── database.py
+│   │   └── middlewares/      # Middlewares
+│   │       ├── cors.py
+│   │       ├── logging.py
+│   │       └── rate_limit.py
+│   │
+│   ├── core/                 # Configurações centrais
+│   │   ├── config.py         # Configurações da app
+│   │   ├── security.py       # JWT, hashing
+│   │   ├── exceptions.py     # Exceções customizadas
+│   │   └── constants.py      # Constantes
+│   │
+│   ├── models/               # Modelos do banco (SQLAlchemy)
+│   │   ├── user.py
+│   │   ├── payment.py
+│   │   ├── communication.py
+│   │   ├── segmentation.py
+│   │   └── base_data.py
+│   │
+│   ├── schemas/              # Schemas Pydantic (validação)
+│   │   ├── user.py
+│   │   ├── auth.py
+│   │   ├── payment.py
+│   │   ├── communication.py
+│   │   ├── segmentation.py
+│   │   └── base_data.py
+│   │
+│   ├── services/             # Lógica de negócio
+│   │   ├── auth_service.py
+│   │   ├── user_service.py
+│   │   ├── payment_service.py
+│   │   ├── communication_service.py
+│   │   ├── segmentation_service.py
+│   │   ├── dashboard_service.py
+│   │   └── upload_service.py
+│   │
+│   ├── repositories/         # Acesso ao banco de dados
+│   │   ├── base_repository.py
+│   │   ├── user_repository.py
+│   │   ├── payment_repository.py
+│   │   └── communication_repository.py
+│   │
+│   ├── db/                   # Banco de dados
+│   │   ├── session.py        # Sessão do DB
+│   │   ├── base.py           # Base class
+│   │   └── migrations/       # Migrações (Alembic)
+│   │
+│   ├── utils/                # Utilitários
+│   │   ├── helpers.py
+│   │   ├── validators.py
+│   │   ├── formatters.py
+│   │   └── email.py
+│   │
+│   └── integrations/         # Integrações externas
+│       ├── whatsapp/
+│       ├── voice/
+│       ├── sms/
+│       └── payment_gateway/
+│
+├── tests/                    # Testes
+│   ├── conftest.py           # Fixtures pytest
+│   ├── unit/                 # Testes unitários
+│   └── integration/          # Testes de integração
+│
+├── scripts/                  # Scripts auxiliares
+│   ├── seed_db.py            # Popular banco
+│   └── migrate.py            # Executar migrações
+│
+├── logs/                     # Logs da aplicação
+└── uploads/                  # Arquivos enviados
