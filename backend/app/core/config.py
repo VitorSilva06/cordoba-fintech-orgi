@@ -48,12 +48,12 @@ class Settings(BaseSettings):
     UPLOAD_DIR: str = "uploads"
     MAX_UPLOAD_SIZE_MB: int = 10
 
-    # ✅ CONFIGURAÇÃO CORRETA NO PYDANTIC V2
+    # PYDANTIC V2
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
         case_sensitive=True,
-        extra="allow",  # <<< ISSO RESOLVE O ERRO
+        extra="allow",
     )
 
 

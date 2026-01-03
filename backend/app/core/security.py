@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Optional, Any, Dict
 
 from jose import jwt, JWTError
@@ -29,14 +29,13 @@ def create_access_token(
     :param expires_delta: Tempo de expiração opcional
     :return: JWT token
     """
-    now = datetime.now()
+    now = datetime.now(tz=timezone.utc)
 
-    if expires_delta:
-        expire = now + expires_delta
-    else:
-        expire = now + timedelta(
-            minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES
-        )
+    expire = (
+        now + expires_delta
+        if expires_delta
+        else now + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
 
     to_encode: Dict[str, Any] = {
         "sub": subject,
@@ -51,7 +50,7 @@ def create_access_token(
     )
 
 
-def decode_access_token(token: str) -> Optional[dict]:
+def decode_access_token(token: str) -> Optional[Dict[str, Any]]:
     """
     Decodifica e valida um JWT
 
@@ -59,12 +58,11 @@ def decode_access_token(token: str) -> Optional[dict]:
     :return: Payload do token ou None se inválido
     """
     try:
-        payload = jwt.decode(
+        return jwt.decode(
             token,
             settings.SECRET_KEY,
             algorithms=[settings.ALGORITHM],
         )
-        return payload
     except JWTError:
         return None
 
@@ -77,7 +75,7 @@ def verify_password(
     hashed_password: str,
 ) -> bool:
     """
-    Verifica se a senha em texto corresponde ao hash
+    Verifica se a senha em texto corresponde ao hash armazenado
     """
     return pwd_context.verify(plain_password, hashed_password)
 

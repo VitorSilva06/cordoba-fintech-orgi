@@ -12,7 +12,7 @@ from app.dependencies.auth import get_current_user
 router = APIRouter()
 
 # ----------------------------------
-# Criar usuário
+# Criar usuário (público)
 # ----------------------------------
 @router.post(
     "/",
@@ -25,15 +25,15 @@ def create_user(
 ):
     user_repo = UserRepository(db)
 
-    existing_user = user_repo.get_by_email(user_in.email)
-    if existing_user:
+    # Verifica se email já existe
+    if user_repo.get_by_email(user_in.email):
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="Email já cadastrado",
         )
 
-    user = user_repo.create(user_in)
-    return user
+    # Criação do usuário (hash da senha ocorre no repositório)
+    return user_repo.create(user_in)
 
 
 # ----------------------------------

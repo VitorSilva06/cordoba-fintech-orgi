@@ -17,6 +17,13 @@ from app.api.routes import (
 from app.api.middlewares.logging import LoggingMiddleware
 from app.api.middlewares.rate_limit import RateLimitMiddleware
 
+# 🔹 IMPORTS DO BANCO
+from app.db.base import Base
+from app.db.session import engine
+
+# 🔹 IMPORTAR MODELS (OBRIGATÓRIO)
+from app.models import User  # noqa: F401
+
 # -------------------------------------------------
 # Inicialização da aplicação
 # -------------------------------------------------
@@ -28,10 +35,16 @@ app = FastAPI(
 )
 
 # -------------------------------------------------
+# Evento de startup → cria tabelas
+# -------------------------------------------------
+@app.on_event("startup")
+def on_startup() -> None:
+    Base.metadata.create_all(bind=engine)
+
+# -------------------------------------------------
 # Middlewares
 # -------------------------------------------------
 
-# CORS
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.CORS_ORIGINS,
@@ -40,10 +53,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Logging
 app.add_middleware(LoggingMiddleware)
 
-# Rate limit da API
 if settings.ENABLE_RATE_LIMIT:
     app.add_middleware(RateLimitMiddleware)
 
