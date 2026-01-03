@@ -3,10 +3,9 @@ from sqlalchemy.orm import DeclarativeBase
 
 class Base(DeclarativeBase):
     """
-    Classe base para todos os modelos SQLAlchemy.
-    Usada para:
-    - Mapeamento ORM
-    - Criação de tabelas
-    - Integração com Alembic
+    Base declarativa do SQLAlchemy.
+
+    Todas as models do projeto devem herdar desta classe
+    para que o SQLAlchemy consiga mapear e criar as tabelas.
     """
     pass

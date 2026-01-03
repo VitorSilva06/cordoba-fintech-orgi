@@ -11,10 +11,7 @@ from app.dependencies.auth import get_current_user
 from pydantic import BaseModel
 
 
-router = APIRouter(
-    prefix="/segmentation",
-    tags=["Segmentation"],
-)
+router = APIRouter()
 
 # ----------------------------------
 # Schemas (MVP)

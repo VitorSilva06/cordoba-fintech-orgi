@@ -9,10 +9,7 @@ from app.repositories.user_repository import UserRepository
 from app.schemas.user import UserCreate, UserResponse
 from app.dependencies.auth import get_current_user
 
-router = APIRouter(
-    prefix="/users",
-    tags=["Users"],
-)
+router = APIRouter()
 
 # ----------------------------------
 # Criar usuário

@@ -29,7 +29,7 @@ def create_access_token(
     :param expires_delta: Tempo de expiração opcional
     :return: JWT token
     """
-    now = datetime.utcnow()
+    now = datetime.now()
 
     if expires_delta:
         expire = now + expires_delta

@@ -21,10 +21,7 @@ from app.dependencies.auth import get_current_user
 from pydantic import BaseModel
 
 
-router = APIRouter(
-    prefix="/base",
-    tags=["Base / Upload"],
-)
+router = APIRouter()
 
 # ----------------------------------
 # Schemas

@@ -18,8 +18,7 @@ from app.repositories.user_repository import UserRepository
 from app.db.session import get_db
 from sqlalchemy.orm import Session
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
-
+router = APIRouter()
 
 @router.post("/login", response_model=Token)
 def login(
