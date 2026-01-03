@@ -1,6 +1,7 @@
 from typing import Optional, List
 
 from sqlalchemy.orm import Session
+from fastapi import HTTPException, status
 
 from app.models.user import User
 from app.core.security import get_password_hash
@@ -47,10 +48,18 @@ class UserRepository:
     # Escrita
     # ----------------------------------
     def create(self, user_in: UserCreate) -> User:
+        try:
+            hashed_password = get_password_hash(user_in.password)
+        except ValueError as exc:
+            raise HTTPException(
+                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                detail=str(exc),
+            )
+
         user = User(
             name=user_in.name,
             email=user_in.email,
-            hashed_password=get_password_hash(user_in.password),
+            hashed_password=hashed_password,
             is_active=True,
             is_superuser=False,
         )

@@ -14,6 +14,13 @@ pwd_context = CryptContext(
     deprecated="auto",
 )
 
+# ----------------------------------
+# Validação de senha
+# ----------------------------------
+def validate_password_bytes(password: str) -> None:
+    if len(password.encode("utf-8")) > 72:
+        raise ValueError("A senha não pode exceder 72 bytes")
+
 
 # ----------------------------------
 # JWT
@@ -22,13 +29,6 @@ def create_access_token(
     subject: str,
     expires_delta: Optional[timedelta] = None,
 ) -> str:
-    """
-    Cria um JWT access token
-
-    :param subject: Identificador do usuário (user.id)
-    :param expires_delta: Tempo de expiração opcional
-    :return: JWT token
-    """
     now = datetime.now(tz=timezone.utc)
 
     expire = (
@@ -51,12 +51,6 @@ def create_access_token(
 
 
 def decode_access_token(token: str) -> Optional[Dict[str, Any]]:
-    """
-    Decodifica e valida um JWT
-
-    :param token: JWT recebido
-    :return: Payload do token ou None se inválido
-    """
     try:
         return jwt.decode(
             token,
@@ -74,14 +68,9 @@ def verify_password(
     plain_password: str,
     hashed_password: str,
 ) -> bool:
-    """
-    Verifica se a senha em texto corresponde ao hash armazenado
-    """
     return pwd_context.verify(plain_password, hashed_password)
 
 
 def get_password_hash(password: str) -> str:
-    """
-    Gera hash seguro da senha
-    """
+    validate_password_bytes(password)
     return pwd_context.hash(password)
