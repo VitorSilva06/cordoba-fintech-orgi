@@ -13,31 +13,32 @@ from app.core.exceptions import UnauthorizedException
 from app.schemas.auth import Token
 from app.schemas.user import UserResponse
 from app.dependencies.auth import get_current_user
+from app.schemas.auth2 import OAuth2EmailRequestForm
 from app.models.user import User
 from app.repositories.user_repository import UserRepository
 from app.db.session import get_db
 
-router = APIRouter(prefix="/auth", tags=["Auth"])
+router = APIRouter()
 
-
-@router.post("/login", response_model=Token)
+@router.post(
+    "/login",
+    response_model=Token,
+    summary="Login com email e senha",
+    description="Use seu email cadastrado para autenticação",
+)
 def login(
     form_data: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
 ):
-    """
-    Autenticação básica (email + password).
-    Retorna JWT.
-    """
-
     password = form_data.password
+    email = form_data.username  # ← aqui é o email
 
-    # 🔐 Proteção obrigatória do bcrypt (72 BYTES, não caracteres)
+    # Proteção bcrypt
     if len(password.encode("utf-8")) > 72:
         raise UnauthorizedException("Usuário ou senha inválidos")
 
     user_repo = UserRepository(db)
-    user: User | None = user_repo.get_by_email(form_data.username)
+    user = user_repo.get_by_email(email)
 
     if not user or not verify_password(password, user.hashed_password):
         raise UnauthorizedException("Usuário ou senha inválidos")
@@ -53,7 +54,6 @@ def login(
         "access_token": access_token,
         "token_type": "bearer",
     }
-
 
 @router.get("/me", response_model=UserResponse)
 def me(
