@@ -6,6 +6,7 @@ import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
 import { Building2, Mail, Lock, User, Phone, AlertCircle, Eye, EyeOff, CheckCircle2 } from 'lucide-react';
+import { authService, getErrorMessage } from '../../services';
 
 export function RegisterForm() {
   const navigate = useNavigate();
@@ -73,11 +74,21 @@ export function RegisterForm() {
     }
 
     setIsSubmitting(true);
-    // Simula registro e redireciona
-    setTimeout(() => {
-      setIsSubmitting(false);
+    
+    try {
+      await authService.register({
+        name: formData.name,
+        email: formData.email,
+        password: formData.password,
+      });
+      
+      // Registro bem-sucedido, redireciona para login
       navigate('/login');
-    }, 500);
+    } catch (error) {
+      setError(getErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const getPasswordStrengthColor = () => {

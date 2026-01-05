@@ -22,3 +22,52 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# ========================================
+# DADOS SENSÍVEIS - NÃO COMMITAR
+# ========================================
+
+# Arquivos de ambiente
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# Banco de dados local
+*.db
+*.sqlite
+*.sqlite3
+
+# Chaves e certificados
+*.pem
+*.key
+*.crt
+*.p12
+*.pfx
+
+# Credenciais
+credentials.json
+secrets.json
+service-account.json
+
+# Virtual environments Python
+env/
+venv/
+.venv/
+ENV/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+
+# Uploads de usuários
+uploads/*
+!uploads/.gitkeep
+
+# Logs do backend
+backend/logs/*
+!backend/logs/.gitkeep

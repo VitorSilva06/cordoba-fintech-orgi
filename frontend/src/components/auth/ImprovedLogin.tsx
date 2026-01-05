@@ -5,7 +5,8 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '../ui/card';
 import { Alert, AlertDescription } from '../ui/alert';
-import { Lock, Mail, AlertCircle, Building2, Eye, EyeOff } from 'lucide-react';
+import { Lock, Mail, AlertCircle, Building2, Eye, EyeOff, Loader2 } from 'lucide-react';
+import { authService, getErrorMessage } from '../../services';
 
 interface ImprovedLoginProps {
   onLogin?: () => void;
@@ -37,44 +38,57 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
       return;
     }
 
-    // Simula login e redireciona
-    setTimeout(() => {
-      setIsSubmitting(false);
+    try {
+      // Chama o serviço de autenticação
+      await authService.login({ email, password });
+      
+      // Login bem-sucedido
       if (onLogin) {
         onLogin();
       } else {
         navigate('/app');
       }
-    }, 500);
+    } catch (error) {
+      // Exibe mensagem de erro
+      setError(getErrorMessage(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const formDisabled = isSubmitting;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4 bg-[var(--bg-secondary)] transition-colors duration-300">
-      <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-950 transition-colors duration-300">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-[var(--brand-primary)]/5 rounded-full blur-3xl" />
+        <div className="absolute -bottom-40 -left-40 w-80 h-80 bg-[var(--brand-accent)]/5 rounded-full blur-3xl" />
+      </div>
+
+      <div className="relative w-full max-w-md space-y-8 animate-fade-in">
         {/* Logo e Título */}
-        <div className="text-center space-y-3">
-          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-accent)] rounded-2xl flex items-center justify-center shadow-lg">
+        <div className="text-center space-y-4">
+          <div className="mx-auto w-20 h-20 bg-gradient-to-br from-[var(--brand-primary)] to-[var(--brand-accent)] rounded-2xl flex items-center justify-center shadow-xl shadow-[var(--brand-primary)]/20 transform hover:scale-105 transition-transform duration-300">
             <Building2 className="w-10 h-10 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-[var(--text-primary)] tracking-tight">
+            <h1 className="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">
               CÓRDOBA FINTECH
             </h1>
-            <p className="text-sm text-[var(--text-tertiary)] mt-1">
+            <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">
               Inteligência em Recuperação de Crédito
             </p>
           </div>
         </div>
 
         {/* Card de Login */}
-        <Card className="border-[var(--border-primary)] bg-[var(--bg-card)] shadow-[var(--shadow-xl)] transition-colors duration-300">
+        <Card className="border-gray-200 dark:border-gray-800 bg-white/80 dark:bg-gray-900/80 backdrop-blur-xl shadow-2xl shadow-gray-900/5 dark:shadow-black/20">
           <CardHeader className="space-y-2 pb-6">
-            <CardTitle className="text-2xl font-semibold text-center text-[var(--text-primary)]">
+            <CardTitle className="text-2xl font-semibold text-center text-gray-900 dark:text-white">
               Bem-vindo de volta
             </CardTitle>
-            <CardDescription className="text-center text-[var(--text-secondary)]">
+            <CardDescription className="text-center text-gray-500 dark:text-gray-400">
               Entre com suas credenciais para acessar a plataforma
             </CardDescription>
           </CardHeader>
@@ -83,21 +97,16 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
             <form onSubmit={handleSubmit} className="space-y-5">
               {/* Campo de E-mail */}
               <div className="space-y-2">
-                <Label 
-                  htmlFor="email" 
-                  className="text-sm font-medium text-[var(--text-primary)]"
-                >
-                  E-mail
-                </Label>
-                <div className="relative">
-                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] pointer-events-none" />
+                <Label htmlFor="email">E-mail</Label>
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-[var(--brand-primary)] transition-colors pointer-events-none" />
                   <Input
                     id="email"
                     type="email"
                     placeholder="seu@email.com"
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="pl-10 h-11 bg-[var(--bg-input)] border-[var(--border-primary)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="pl-10 h-11"
                     required
                     disabled={formDisabled}
                   />
@@ -106,29 +115,25 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
 
               {/* Campo de Senha */}
               <div className="space-y-2">
-                <Label 
-                  htmlFor="password" 
-                  className="text-sm font-medium text-[var(--text-primary)]"
-                >
-                  Senha
-                </Label>
-                <div className="relative">
-                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-[var(--text-muted)] pointer-events-none" />
+                <Label htmlFor="password">Senha</Label>
+                <div className="relative group">
+                  <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400 dark:text-gray-500 group-focus-within:text-[var(--brand-primary)] transition-colors pointer-events-none" />
                   <Input
                     id="password"
                     type={showPassword ? 'text' : 'password'}
                     placeholder="••••••••"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
-                    className="pl-10 pr-10 h-11 bg-[var(--bg-input)] border-[var(--border-primary)] text-[var(--text-primary)] placeholder:text-[var(--text-muted)] focus:border-[var(--border-focus)] focus:ring-2 focus:ring-[var(--brand-primary)]/20 transition-all"
+                    className="pl-10 pr-10 h-11"
                     required
                     disabled={formDisabled}
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-[var(--text-secondary)] transition-colors"
+                    className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 dark:text-gray-500 hover:text-gray-600 dark:hover:text-gray-300 transition-colors"
                     disabled={formDisabled}
+                    tabIndex={-1}
                   >
                     {showPassword ? (
                       <EyeOff className="w-5 h-5" />
@@ -141,7 +146,7 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
 
               {/* Erro */}
               {error && (
-                <Alert variant="destructive" className="py-3">
+                <Alert variant="destructive" className="py-3 animate-shake">
                   <AlertCircle className="h-4 w-4" />
                   <AlertDescription>{error}</AlertDescription>
                 </Alert>
@@ -151,7 +156,7 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
               <div className="flex items-center justify-end">
                 <Link
                   to="/forgot-password"
-                  className="text-sm font-medium text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] transition-colors"
+                  className="text-sm font-medium text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] hover:underline transition-all"
                 >
                   Esqueci minha senha
                 </Link>
@@ -160,15 +165,12 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
               {/* Botão de Login */}
               <Button 
                 type="submit" 
-                className="w-full h-11 bg-[var(--brand-primary)] hover:bg-[var(--brand-primary-hover)] text-white font-semibold shadow-md hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full h-11 font-semibold shadow-lg shadow-[var(--brand-primary)]/20 hover:shadow-xl hover:shadow-[var(--brand-primary)]/30 transition-all"
                 disabled={formDisabled}
               >
                 {formDisabled ? (
                   <span className="flex items-center gap-2">
-                    <svg className="animate-spin h-5 w-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                    </svg>
+                    <Loader2 className="h-5 w-5 animate-spin" />
                     Entrando...
                   </span>
                 ) : (
@@ -179,10 +181,10 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
               {/* Divider */}
               <div className="relative my-6">
                 <div className="absolute inset-0 flex items-center">
-                  <div className="w-full border-t border-[var(--border-secondary)]"></div>
+                  <div className="w-full border-t border-gray-200 dark:border-gray-700"></div>
                 </div>
                 <div className="relative flex justify-center text-sm">
-                  <span className="px-3 bg-[var(--bg-card)] text-[var(--text-muted)]">
+                  <span className="px-3 bg-white dark:bg-gray-900 text-gray-500 dark:text-gray-400">
                     ou continue com
                   </span>
                 </div>
@@ -192,7 +194,7 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
               <Button 
                 type="button" 
                 variant="outline" 
-                className="w-full h-11 border-[var(--border-primary)] text-[var(--text-primary)] hover:bg-[var(--hover-bg)] transition-all"
+                className="w-full h-11 hover:bg-gray-50 dark:hover:bg-gray-800 transition-all"
                 disabled={formDisabled}
               >
                 <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
@@ -205,11 +207,11 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
               </Button>
 
               {/* Link para Cadastro */}
-              <p className="text-center text-sm text-[var(--text-secondary)] mt-6">
+              <p className="text-center text-sm text-gray-500 dark:text-gray-400 mt-6">
                 Não tem uma conta?{' '}
                 <Link 
                   to="/register" 
-                  className="font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] transition-colors"
+                  className="font-semibold text-[var(--brand-primary)] hover:text-[var(--brand-primary-hover)] hover:underline transition-all"
                 >
                   Criar conta
                 </Link>
@@ -219,7 +221,7 @@ export function ImprovedLogin({ onLogin }: ImprovedLoginProps) {
         </Card>
 
         {/* Footer */}
-        <p className="text-center text-xs text-[var(--text-muted)]">
+        <p className="text-center text-xs text-gray-400 dark:text-gray-500">
           © 2025 Córdoba Fintech. Todos os direitos reservados.
         </p>
       </div>
