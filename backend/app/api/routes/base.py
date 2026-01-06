@@ -2,7 +2,7 @@ import os
 import uuid
 from datetime import datetime
 from typing import List
-
+from fastapi.responses import FileResponse
 from fastapi import (
     APIRouter,
     Depends,
@@ -47,7 +47,7 @@ def ensure_upload_dir():
 
 
 def validate_file(file: UploadFile):
-    allowed_extensions = [".csv", ".xlsx", ".xls"]
+    allowed_extensions = [".csv", ".xlsx"]
     ext = os.path.splitext(file.filename)[1].lower()
 
     if ext not in allowed_extensions:
@@ -134,10 +134,16 @@ def download_file(
     for filename in os.listdir(settings.UPLOAD_DIR):
         if filename.startswith(file_id):
             file_path = os.path.join(settings.UPLOAD_DIR, filename)
-            return {
-                "file": file_path,
-                "message": "Download pronto (implementar FileResponse)",
-            }
+
+            if not os.path.isfile(file_path):
+                break
+
+            return FileResponse(
+                path=file_path,
+                filename=filename,
+                media_type="application/octet-stream",
+            )
+
 
     raise HTTPException(
         status_code=status.HTTP_404_NOT_FOUND,

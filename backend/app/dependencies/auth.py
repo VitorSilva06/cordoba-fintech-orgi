@@ -19,7 +19,7 @@ def get_current_user(
     if not payload or "sub" not in payload:
         raise UnauthorizedException("Token inválido")
 
-    user_id = int(payload["sub"])
+    user_id = payload["sub"]
 
     user = UserRepository(db).get_by_id(user_id)
 
