@@ -1,0 +1,23 @@
+Dados dashboard principal:
+-Total de contratos
+-Contratos ativos
+-Contratos pagos
+-contratos atrasados
+-valor Total
+-Média Atraso
+-Distribuição por Status
+-Faixa de Atraso (D+)
+-Top devedore (Nome, CPF, Contratos, Valor Pendente, Max Atraso) CPF tem que aparecer somente final do digitos.
+
+Dashboard de Análise de Clientes:
+-D+ Médio
+-Bons pagadores
+-Reincidentes
+-Inadimplentes
+-Ticket Médio
+-Idade Média
+-Perfil Demográfico do Cliente (Distribuição por faixa Etária, Distribuição por Sexo, Top 5 - maior inadiplência, Top 5- melhor comportamento).
+-Perfil comportamental (Historico do Pagador)(Pontualidade Pagamento, Distribuição de Reincidência)
+-Perfil financieiro (Inadimplência por Faixa de Valor)
+-Propensão ao Pagamento (Perfil de Risco)(Evolução do Comportamento (Últimos 6 Meses))
+-Análise por Faixa de Atraso (D+)(Faixa D+,	Clientes, Valor Total,	Idade Média,	Sexo (M/F),	Reincidência)

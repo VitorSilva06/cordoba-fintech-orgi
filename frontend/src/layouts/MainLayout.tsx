@@ -86,7 +86,7 @@ export function MainLayout() {
   };
 
   return (
-    <div className="flex h-screen bg-[var(--bg-primary)]">
+    <div className="flex h-screen bg-background transition-colors duration-200">
       <Sidebar 
         activeScreen={activeScreen} 
         onNavigate={setActiveScreen}
@@ -100,8 +100,10 @@ export function MainLayout() {
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
           userName="Usuário Demo"
         />
-        <main className="flex-1 overflow-auto bg-[var(--bg-primary)]">
-          {renderContent()}
+        <main className="flex-1 overflow-auto bg-background transition-colors duration-200">
+          <div className="animate-fade-in">
+            {renderContent()}
+          </div>
         </main>
       </div>
     </div>

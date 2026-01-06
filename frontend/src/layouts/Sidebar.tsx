@@ -19,7 +19,7 @@ interface SidebarProps {
 interface MenuItem {
   id: string;
   label: string;
-  icon: any;
+  icon: React.ElementType;
   submenu?: MenuItem[];
   roles?: string[];
 }
@@ -172,28 +172,31 @@ export function Sidebar({ activeScreen, onNavigate, userProfile, isOpen, onClose
         <button
           onClick={() => handleMenuClick(item.id, hasSubmenu || false)}
           className={cn(
-            "w-full flex items-center gap-2 md:gap-3 px-2 md:px-4 py-2 md:py-3 rounded-lg transition-all text-left text-sm md:text-base",
+            "w-full flex items-center justify-between px-3 py-2.5 rounded-lg transition-all duration-200 text-left group",
             level === 0 && "mt-1",
-            level === 1 && "ml-2 md:ml-4 text-xs md:text-sm",
-            isActive && "bg-[var(--brand-primary)] text-white",
-            !isActive && "text-[var(--text-on-dark)] hover:bg-[var(--hover-bg)]"
+            level === 1 && "ml-4 text-sm",
+            isActive && "bg-primary text-white shadow-sm",
+            !isActive && "text-sidebar-foreground hover:bg-sidebar-accent"
           )}
         >
-          <div className="flex items-center gap-2 md:gap-3">
-            <Icon className="w-4 h-4 md:w-5 md:h-5 flex-shrink-0" />
+          <div className="flex items-center gap-3 min-w-0">
+            <Icon className={cn(
+              "w-5 h-5 shrink-0 transition-colors",
+              isActive ? "text-white" : "text-sidebar-foreground/70 group-hover:text-sidebar-foreground"
+            )} />
             <span className="truncate">{item.label}</span>
           </div>
           {hasSubmenu && (
             <ChevronDown
               className={cn(
-                "w-4 h-4 transition-transform flex-shrink-0",
+                "w-4 h-4 shrink-0 transition-transform duration-200",
                 isExpanded && "rotate-180"
               )}
             />
           )}
         </button>
         {hasSubmenu && isExpanded && (
-          <div className="mt-1 space-y-1">
+          <div className="mt-1 space-y-0.5 animate-slide-down">
             {item.submenu!.map(subItem => renderMenuItem(subItem, level + 1))}
           </div>
         )}
@@ -206,37 +209,55 @@ export function Sidebar({ activeScreen, onNavigate, userProfile, isOpen, onClose
       {/* Overlay para mobile */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/50 z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-sm z-40 lg:hidden transition-opacity"
           onClick={onClose}
         />
       )}
       
       {/* Sidebar */}
-      <div className={cn(
-        "fixed lg:static inset-y-0 left-0 z-50 w-64 md:w-72 lg:w-64 bg-[#0C1B33] flex flex-col transition-transform duration-300 lg:translate-x-0",
+      <aside className={cn(
+        "fixed lg:static inset-y-0 left-0 z-50 w-64 bg-sidebar flex flex-col transition-transform duration-300 lg:translate-x-0",
         isOpen ? "translate-x-0" : "-translate-x-full"
       )}>
-        <div className="p-4 md:p-6 border-b border-[#004BFF]/30">
-          <div className="flex items-start justify-between">
-            <div className="flex flex-col gap-1 flex-1">
-              <span className="text-[var(--text-on-dark)] font-semibold">Córdoba Fintech</span>
+        {/* Header */}
+        <div className="p-4 border-b border-sidebar-border">
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-primary flex items-center justify-center">
+                <span className="text-white font-bold text-lg">C</span>
+              </div>
+              <div>
+                <h1 className="text-sidebar-foreground font-semibold">Córdoba</h1>
+                <p className="text-sidebar-foreground/60 text-xs">Fintech</p>
+              </div>
             </div>
             {onClose && (
               <button
                 onClick={onClose}
-                className="lg:hidden p-1 text-[var(--text-on-dark)] hover:bg-[var(--hover-bg)] rounded"
+                className="lg:hidden p-1.5 text-sidebar-foreground hover:bg-sidebar-accent rounded-lg transition-colors"
+                aria-label="Fechar menu"
               >
                 <X className="w-5 h-5" />
               </button>
             )}
           </div>
         </div>
-        <ScrollArea className="flex-1 px-2 md:px-3 py-4">
+        
+        {/* Navigation */}
+        <ScrollArea className="flex-1 px-3 py-4">
           <nav className="space-y-1">
             {menuItems.map(item => renderMenuItem(item))}
           </nav>
         </ScrollArea>
-      </div>
+        
+        {/* Footer */}
+        <div className="p-4 border-t border-sidebar-border">
+          <div className="flex items-center gap-3 text-sidebar-foreground/60 text-xs">
+            <div className="w-2 h-2 rounded-full bg-success animate-pulse" />
+            <span>Sistema Online</span>
+          </div>
+        </div>
+      </aside>
     </>
   );
 }

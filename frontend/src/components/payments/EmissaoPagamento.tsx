@@ -7,7 +7,8 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Textarea } from '../ui/textarea';
 import { CreditCard, Barcode, QrCode, Link2, DollarSign, Calendar, Plus, Search, CheckCircle2 } from 'lucide-react';
 import { BarChart, Bar, PieChart, Pie, Cell, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { chartColors } from '../../config/chartColors';
+import { chartColors, chartConfig } from '../../config/chartColors';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableEmpty } from '../ui/table';
 
 export function EmissaoPagamento() {
   const [metodoPagamento, setMetodoPagamento] = useState('pix');
@@ -42,13 +43,13 @@ export function EmissaoPagamento() {
 
   const getStatusBadge = (status: string) => {
     const statusMap = {
-      pago: { label: 'Pago', color: chartColors.success },
-      pendente: { label: 'Pendente', color: chartColors.warning },
-      processando: { label: 'Processando', color: chartColors.info },
-      cancelado: { label: 'Cancelado', color: chartColors.danger },
+      pago: { label: 'Pago', variant: 'success' as const },
+      pendente: { label: 'Pendente', variant: 'warning' as const },
+      processando: { label: 'Processando', variant: 'secondary' as const },
+      cancelado: { label: 'Cancelado', variant: 'destructive' as const },
     };
     const config = statusMap[status as keyof typeof statusMap];
-    return <Badge style={{ backgroundColor: config.color }}>{config.label}</Badge>;
+    return <Badge variant={config.variant}>{config.label}</Badge>;
   };
 
   const handleEmitirPagamento = () => {
@@ -56,29 +57,29 @@ export function EmissaoPagamento() {
   };
 
   return (
-    <div className="p-6 space-y-6">
+    <div className="page-container">
       {/* Header */}
-      <div>
-        <h1 className="text-white text-2xl">Emissão de Pagamento</h1>
-        <p className="text-gray-300 mt-1">Gere cobranças via PIX, boleto, cartão ou link de pagamento</p>
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Emissão de Pagamento</h1>
+          <p className="page-description">Gere cobranças via PIX, boleto, cartão ou link de pagamento</p>
+        </div>
       </div>
 
       {/* Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {estatisticas.map((stat, index) => (
-          <Card key={index} className="bg-[#1a2942] border-[#004BFF]">
-            <CardContent className="p-6">
-              <div className="flex items-center justify-between">
-                <div>
-                  <p className="text-gray-300 text-sm">{stat.nome}</p>
-                  <p className="text-white text-3xl mt-2">{stat.valor}</p>
-                  <p className="text-green-400 text-sm mt-1">{stat.variacao}</p>
-                </div>
-                <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${stat.cor}20` }}>
-                  <stat.icon className="w-6 h-6" style={{ color: stat.cor }} />
-                </div>
+          <Card key={index} className="stats-card">
+            <div className="flex items-center justify-between">
+              <div>
+                <p className="stats-label">{stat.nome}</p>
+                <p className="stats-value mt-2">{stat.valor}</p>
+                <p className="text-success text-sm mt-1">{stat.variacao}</p>
               </div>
-            </CardContent>
+              <div className="w-12 h-12 rounded-full flex items-center justify-center" style={{ backgroundColor: `${stat.cor}20` }}>
+                <stat.icon className="w-6 h-6" style={{ color: stat.cor }} />
+              </div>
+            </div>
           </Card>
         ))}
       </div>
@@ -86,23 +87,23 @@ export function EmissaoPagamento() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Formulário de Emissão */}
         <div className="lg:col-span-2">
-          <Card className="bg-[#1a2942] border-[#004BFF]">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">Nova Cobrança</CardTitle>
+              <CardTitle>Nova Cobrança</CardTitle>
             </CardHeader>
             <CardContent className="space-y-6">
               {/* Métodos de Pagamento */}
               <div>
-                <label className="text-gray-300 text-sm mb-3 block">Método de Pagamento</label>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                <label className="form-label">Método de Pagamento</label>
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-2">
                   {metodosPagamento.map((metodo) => (
                     <div
                       key={metodo.id}
                       onClick={() => setMetodoPagamento(metodo.id)}
                       className={`p-4 rounded-lg border-2 cursor-pointer transition-all ${
                         metodoPagamento === metodo.id
-                          ? 'border-[#004BFF] bg-[#004BFF20]'
-                          : 'border-[#2a3f5f] bg-[#0C1B33] hover:border-[#004BFF50]'
+                          ? 'border-primary bg-primary/10'
+                          : 'border-border bg-card hover:border-primary/50'
                       }`}
                     >
                       <div className="flex items-center gap-3">
@@ -110,8 +111,8 @@ export function EmissaoPagamento() {
                           <metodo.icon className="w-5 h-5" style={{ color: metodo.cor }} />
                         </div>
                         <div>
-                          <p className="text-white">{metodo.nome}</p>
-                          <p className="text-gray-400 text-xs">{metodo.descricao}</p>
+                          <p className="text-foreground font-medium">{metodo.nome}</p>
+                          <p className="text-text-muted text-xs">{metodo.descricao}</p>
                         </div>
                       </div>
                     </div>
@@ -122,47 +123,47 @@ export function EmissaoPagamento() {
               {/* Dados do Pagamento */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label className="text-gray-300 text-sm mb-2 block">Valor</label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">R$</span>
+                  <label className="form-label">Valor</label>
+                  <div className="relative mt-2">
+                    <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-text-muted">R$</span>
                     <Input
                       type="text"
                       placeholder="0,00"
                       value={valor}
                       onChange={(e) => setValor(e.target.value)}
-                      className="pl-10 bg-[#0C1B33] border-[#004BFF] text-white"
+                      className="pl-10"
                     />
                   </div>
                 </div>
                 <div>
-                  <label className="text-gray-300 text-sm mb-2 block">Vencimento</label>
+                  <label className="form-label">Vencimento</label>
                   <Input
                     type="date"
                     value={vencimento}
                     onChange={(e) => setVencimento(e.target.value)}
-                    className="bg-[#0C1B33] border-[#004BFF] text-white"
+                    className="mt-2"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-300 text-sm mb-2 block">Cliente</label>
-                <div className="relative">
-                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400" />
+                <label className="form-label">Cliente</label>
+                <div className="relative mt-2">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-muted" />
                   <Input
                     placeholder="Buscar cliente por nome ou CPF..."
-                    className="pl-10 bg-[#0C1B33] border-[#004BFF] text-white"
+                    className="pl-10"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="text-gray-300 text-sm mb-2 block">Descrição</label>
+                <label className="form-label">Descrição</label>
                 <Textarea
                   placeholder="Descrição da cobrança..."
                   value={descricao}
                   onChange={(e) => setDescricao(e.target.value)}
-                  className="bg-[#0C1B33] border-[#004BFF] text-white min-h-[100px]"
+                  className="mt-2 min-h-[100px]"
                 />
               </div>
 
@@ -170,29 +171,21 @@ export function EmissaoPagamento() {
               {metodoPagamento === 'boleto' && (
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="text-gray-300 text-sm mb-2 block">Multa (%)</label>
-                    <Input
-                      type="text"
-                      placeholder="2"
-                      className="bg-[#0C1B33] border-[#004BFF] text-white"
-                    />
+                    <label className="form-label">Multa (%)</label>
+                    <Input type="text" placeholder="2" className="mt-2" />
                   </div>
                   <div>
-                    <label className="text-gray-300 text-sm mb-2 block">Juros ao mês (%)</label>
-                    <Input
-                      type="text"
-                      placeholder="1"
-                      className="bg-[#0C1B33] border-[#004BFF] text-white"
-                    />
+                    <label className="form-label">Juros ao mês (%)</label>
+                    <Input type="text" placeholder="1" className="mt-2" />
                   </div>
                 </div>
               )}
 
               {metodoPagamento === 'cartao' && (
                 <div>
-                  <label className="text-gray-300 text-sm mb-2 block">Parcelas</label>
+                  <label className="form-label">Parcelas</label>
                   <Select defaultValue="1">
-                    <SelectTrigger className="bg-[#0C1B33] border-[#004BFF] text-white">
+                    <SelectTrigger className="mt-2">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -206,11 +199,8 @@ export function EmissaoPagamento() {
                 </div>
               )}
 
-              <Button 
-                onClick={handleEmitirPagamento}
-                className="w-full bg-[#00C08A] hover:bg-[#00A876]"
-              >
-                <Plus className="w-4 h-4 mr-2" />
+              <Button onClick={handleEmitirPagamento} variant="success" className="w-full">
+                <Plus className="w-4 h-4" />
                 Emitir Cobrança
               </Button>
             </CardContent>
@@ -219,40 +209,40 @@ export function EmissaoPagamento() {
 
         {/* Resumo e Visualização */}
         <div className="space-y-6">
-          <Card className="bg-[#1a2942] border-[#004BFF]">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white">Resumo</CardTitle>
+              <CardTitle>Resumo</CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="p-4 bg-[#0C1B33] rounded-lg border border-[#004BFF]">
-                <p className="text-gray-400 text-sm mb-1">Método Selecionado</p>
-                <p className="text-white">
+              <div className="p-4 bg-secondary rounded-lg">
+                <p className="text-text-muted text-sm mb-1">Método Selecionado</p>
+                <p className="text-foreground font-medium">
                   {metodosPagamento.find(m => m.id === metodoPagamento)?.nome}
                 </p>
               </div>
-              <div className="p-4 bg-[#0C1B33] rounded-lg border border-[#004BFF]">
-                <p className="text-gray-400 text-sm mb-1">Valor</p>
-                <p className="text-white text-2xl">R$ {valor || '0,00'}</p>
+              <div className="p-4 bg-secondary rounded-lg">
+                <p className="text-text-muted text-sm mb-1">Valor</p>
+                <p className="text-foreground text-2xl font-bold">R$ {valor || '0,00'}</p>
               </div>
-              <div className="p-4 bg-[#0C1B33] rounded-lg border border-[#004BFF]">
-                <p className="text-gray-400 text-sm mb-1">Vencimento</p>
-                <p className="text-white">{vencimento || 'Não definido'}</p>
+              <div className="p-4 bg-secondary rounded-lg">
+                <p className="text-text-muted text-sm mb-1">Vencimento</p>
+                <p className="text-foreground font-medium">{vencimento || 'Não definido'}</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="bg-[#1a2942] border-[#004BFF]">
+          <Card>
             <CardHeader>
-              <CardTitle className="text-white text-sm">Integrações Ativas</CardTitle>
+              <CardTitle className="text-sm">Integrações Ativas</CardTitle>
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-sm">Mercado Pago</span>
-                <Badge style={{ backgroundColor: chartColors.success }}>Ativo</Badge>
+                <span className="text-text-secondary text-sm">Mercado Pago</span>
+                <Badge variant="success">Ativo</Badge>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-gray-300 text-sm">PicPay</span>
-                <Badge style={{ backgroundColor: chartColors.success }}>Ativo</Badge>
+                <span className="text-text-secondary text-sm">PicPay</span>
+                <Badge variant="success">Ativo</Badge>
               </div>
             </CardContent>
           </Card>
@@ -261,9 +251,9 @@ export function EmissaoPagamento() {
 
       {/* Gráficos de Análise */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <Card className="bg-[#1a2942] border-[#004BFF]">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-white">Emissões por Método</CardTitle>
+            <CardTitle>Emissões por Método</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
@@ -283,26 +273,26 @@ export function EmissaoPagamento() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#0C1B33', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
+                  contentStyle={{ backgroundColor: chartConfig.tooltipBg, border: `1px solid ${chartConfig.tooltipBorder}`, borderRadius: '8px' }}
                 />
               </PieChart>
             </ResponsiveContainer>
           </CardContent>
         </Card>
 
-        <Card className="bg-[#1a2942] border-[#004BFF]">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-white">Taxa de Conversão</CardTitle>
+            <CardTitle>Taxa de Conversão</CardTitle>
           </CardHeader>
           <CardContent>
             <ResponsiveContainer width="100%" height={300}>
               <BarChart data={conversaoPorMetodo}>
-                <CartesianGrid strokeDasharray="3 3" stroke="#2a3f5f" />
-                <XAxis dataKey="metodo" stroke="#F2F4F7" />
-                <YAxis stroke="#F2F4F7" />
+                <CartesianGrid strokeDasharray="3 3" stroke={chartConfig.gridColor} />
+                <XAxis dataKey="metodo" stroke={chartConfig.textColor} />
+                <YAxis stroke={chartConfig.textColor} />
                 <Tooltip 
-                  contentStyle={{ backgroundColor: '#0C1B33', border: `1px solid ${chartColors.primary}`, borderRadius: '8px' }}
-                  labelStyle={{ color: '#F2F4F7' }}
+                  contentStyle={{ backgroundColor: chartConfig.tooltipBg, border: `1px solid ${chartConfig.tooltipBorder}`, borderRadius: '8px' }}
+                  labelStyle={{ color: chartConfig.textColor }}
                 />
                 <Bar dataKey="taxa" fill={chartColors.success} name="Taxa de Conversão %" />
               </BarChart>
@@ -312,37 +302,44 @@ export function EmissaoPagamento() {
       </div>
 
       {/* Últimas Emissões */}
-      <Card className="bg-[#1a2942] border-[#004BFF]">
+      <Card>
         <CardHeader>
-          <CardTitle className="text-white">Últimas Emissões</CardTitle>
+          <CardTitle>Últimas Emissões</CardTitle>
         </CardHeader>
         <CardContent>
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b border-[#004BFF]">
-                  <th className="text-left text-gray-300 pb-3">ID</th>
-                  <th className="text-left text-gray-300 pb-3">Cliente</th>
-                  <th className="text-left text-gray-300 pb-3">Valor</th>
-                  <th className="text-left text-gray-300 pb-3">Método</th>
-                  <th className="text-left text-gray-300 pb-3">Status</th>
-                  <th className="text-left text-gray-300 pb-3">Data</th>
-                </tr>
-              </thead>
-              <tbody>
-                {ultimasEmissoes.map((emissao) => (
-                  <tr key={emissao.id} className="border-b border-[#2a3f5f]">
-                    <td className="py-3 text-white">{emissao.id}</td>
-                    <td className="py-3 text-white">{emissao.cliente}</td>
-                    <td className="py-3 text-white">R$ {emissao.valor.toFixed(2)}</td>
-                    <td className="py-3 text-white">{emissao.metodo}</td>
-                    <td className="py-3">{getStatusBadge(emissao.status)}</td>
-                    <td className="py-3 text-gray-300">{emissao.data}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>ID</TableHead>
+                <TableHead>Cliente</TableHead>
+                <TableHead>Valor</TableHead>
+                <TableHead>Método</TableHead>
+                <TableHead>Status</TableHead>
+                <TableHead>Data</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {ultimasEmissoes.length === 0 ? (
+                <TableEmpty
+                  colSpan={6}
+                  icon={DollarSign}
+                  title="Nenhuma emissão encontrada"
+                  description="Emita sua primeira cobrança para ver o histórico aqui"
+                />
+              ) : (
+                ultimasEmissoes.map((emissao) => (
+                  <TableRow key={emissao.id}>
+                    <TableCell className="font-mono text-sm">{emissao.id}</TableCell>
+                    <TableCell className="font-medium">{emissao.cliente}</TableCell>
+                    <TableCell>R$ {emissao.valor.toFixed(2)}</TableCell>
+                    <TableCell>{emissao.metodo}</TableCell>
+                    <TableCell>{getStatusBadge(emissao.status)}</TableCell>
+                    <TableCell className="text-text-secondary">{emissao.data}</TableCell>
+                  </TableRow>
+                ))
+              )}
+            </TableBody>
+          </Table>
         </CardContent>
       </Card>
     </div>

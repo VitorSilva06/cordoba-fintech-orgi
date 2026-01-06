@@ -1,9 +1,9 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableEmpty } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { Users, ArrowRight } from 'lucide-react';
+import { Users, ArrowRight, Inbox } from 'lucide-react';
 
 export function DistribuicaoCarteiras() {
   const operadores: Array<{ id: number; nome: string; equipe: string; leads: number; capacidade: number; performance: number }> = [];
@@ -11,10 +11,12 @@ export function DistribuicaoCarteiras() {
   const leadsDisponiveis: Array<{ segmento: string; quantidade: number; prioridade: string }> = [];
 
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-gray-900">Distribuição de Carteiras</h1>
-        <p className="text-gray-600">Distribua leads entre operadores e equipes</p>
+    <div className="page-container">
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Distribuição de Carteiras</h1>
+          <p className="page-description">Distribua leads entre operadores e equipes</p>
+        </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
@@ -23,34 +25,38 @@ export function DistribuicaoCarteiras() {
             <CardTitle>Leads Disponíveis para Distribuição</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            {leadsDisponiveis.map((lead) => (
-              <div key={lead.segmento} className="flex items-center justify-between p-4 bg-gray-50 rounded-lg border border-gray-200">
-                <div className="flex-1">
-                  <p className="text-gray-900">{lead.segmento}</p>
-                  <p className="text-gray-600 text-sm">{lead.quantidade} leads disponíveis</p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <Badge variant={lead.prioridade === 'alta' ? 'destructive' : lead.prioridade === 'media' ? 'default' : 'secondary'}>
-                    {lead.prioridade === 'alta' ? 'Alta' : lead.prioridade === 'media' ? 'Média' : 'Baixa'}
-                  </Badge>
-                  <Button size="sm" className="bg-blue-600 hover:bg-blue-700">
-                    Distribuir
-                  </Button>
-                </div>
+            {leadsDisponiveis.length === 0 ? (
+              <div className="empty-state py-8">
+                <Inbox className="w-12 h-12 text-text-muted mx-auto mb-3" />
+                <p className="text-foreground font-medium">Nenhum lead disponível</p>
+                <p className="text-text-muted text-sm">Faça upload de uma base para distribuir</p>
               </div>
-            ))}
+            ) : (
+              leadsDisponiveis.map((lead) => (
+                <div key={lead.segmento} className="flex items-center justify-between p-4 bg-secondary rounded-lg border border-border">
+                  <div className="flex-1">
+                    <p className="text-foreground font-medium">{lead.segmento}</p>
+                    <p className="text-text-secondary text-sm">{lead.quantidade} leads disponíveis</p>
+                  </div>
+                  <div className="flex items-center gap-3">
+                    <Badge variant={lead.prioridade === 'alta' ? 'destructive' : lead.prioridade === 'media' ? 'warning' : 'secondary'}>
+                      {lead.prioridade === 'alta' ? 'Alta' : lead.prioridade === 'media' ? 'Média' : 'Baixa'}
+                    </Badge>
+                    <Button size="sm">Distribuir</Button>
+                  </div>
+                </div>
+              ))
+            )}
           </CardContent>
         </Card>
 
         <Card>
           <CardHeader>
-            <div className="flex items-center justify-between">
-              <CardTitle>Distribuição Rápida</CardTitle>
-            </div>
+            <CardTitle>Distribuição Rápida</CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <label className="text-sm text-gray-700">Selecionar Segmento</label>
+              <label className="form-label">Selecionar Segmento</label>
               <Select>
                 <SelectTrigger>
                   <SelectValue placeholder="Escolha um segmento" />
@@ -65,7 +71,7 @@ export function DistribuicaoCarteiras() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-gray-700">Selecionar Equipe</label>
+              <label className="form-label">Selecionar Equipe</label>
               <Select>
                 <SelectTrigger>
                   <SelectValue placeholder="Escolha uma equipe" />
@@ -80,7 +86,7 @@ export function DistribuicaoCarteiras() {
             </div>
 
             <div className="space-y-2">
-              <label className="text-sm text-gray-700">Critério de Distribuição</label>
+              <label className="form-label">Critério de Distribuição</label>
               <Select>
                 <SelectTrigger>
                   <SelectValue placeholder="Escolha o critério" />
@@ -93,7 +99,7 @@ export function DistribuicaoCarteiras() {
               </Select>
             </div>
 
-            <Button className="w-full bg-blue-600 hover:bg-blue-700 gap-2 mt-4">
+            <Button className="w-full mt-4">
               <ArrowRight className="w-4 h-4" />
               Distribuir Automaticamente
             </Button>
@@ -118,38 +124,47 @@ export function DistribuicaoCarteiras() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {operadores.map((op) => {
-                const utilizacao = (op.leads / op.capacidade) * 100;
-                return (
-                  <TableRow key={op.id}>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                          <Users className="w-4 h-4 text-blue-600" />
+              {operadores.length === 0 ? (
+                <TableEmpty
+                  colSpan={6}
+                  icon={Users}
+                  title="Nenhum operador cadastrado"
+                  description="Adicione operadores para distribuir leads"
+                />
+              ) : (
+                operadores.map((op) => {
+                  const utilizacao = (op.leads / op.capacidade) * 100;
+                  return (
+                    <TableRow key={op.id}>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
+                            <Users className="w-4 h-4 text-primary" />
+                          </div>
+                          <span className="font-medium">{op.nome}</span>
                         </div>
-                        {op.nome}
-                      </div>
-                    </TableCell>
-                    <TableCell>
-                      <Badge variant="outline">{op.equipe}</Badge>
-                    </TableCell>
-                    <TableCell>{op.leads}</TableCell>
-                    <TableCell>{op.capacidade}</TableCell>
-                    <TableCell className="text-blue-600">{op.performance}%</TableCell>
-                    <TableCell>
-                      <div className="flex items-center gap-2">
-                        <div className="flex-1 bg-gray-200 rounded-full h-2">
-                          <div
-                            className={`h-2 rounded-full ${utilizacao > 80 ? 'bg-red-600' : utilizacao > 60 ? 'bg-yellow-600' : 'bg-green-600'}`}
-                            style={{ width: `${utilizacao}%` }}
-                          />
+                      </TableCell>
+                      <TableCell>
+                        <Badge variant="outline">{op.equipe}</Badge>
+                      </TableCell>
+                      <TableCell>{op.leads}</TableCell>
+                      <TableCell>{op.capacidade}</TableCell>
+                      <TableCell className="text-primary font-medium">{op.performance}%</TableCell>
+                      <TableCell>
+                        <div className="flex items-center gap-2">
+                          <div className="flex-1 bg-secondary rounded-full h-2">
+                            <div
+                              className={`h-2 rounded-full transition-all ${utilizacao > 80 ? 'bg-destructive' : utilizacao > 60 ? 'bg-warning' : 'bg-success'}`}
+                              style={{ width: `${utilizacao}%` }}
+                            />
+                          </div>
+                          <span className="text-sm text-text-secondary">{utilizacao.toFixed(0)}%</span>
                         </div>
-                        <span className="text-sm text-gray-600">{utilizacao.toFixed(0)}%</span>
-                      </div>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
             </TableBody>
           </Table>
         </CardContent>

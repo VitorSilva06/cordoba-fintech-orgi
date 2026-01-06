@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableEmpty } from '../ui/table';
 import { Badge } from '../ui/badge';
 import { Button } from '../ui/button';
 import { Phone, PhoneCall, PhoneMissed, Volume2 } from 'lucide-react';
@@ -11,22 +11,22 @@ export function DisparosVoz() {
     switch (status) {
       case 'atendida':
         return (
-          <Badge className="bg-green-100 text-green-700 hover:bg-green-100">
-            <PhoneCall className="w-3 h-3 mr-1" />
+          <Badge variant="success">
+            <PhoneCall className="w-3 h-3" />
             Atendida
           </Badge>
         );
       case 'nao_atendida':
         return (
-          <Badge className="bg-yellow-100 text-yellow-700 hover:bg-yellow-100">
-            <PhoneMissed className="w-3 h-3 mr-1" />
+          <Badge variant="warning">
+            <PhoneMissed className="w-3 h-3" />
             Não Atendida
           </Badge>
         );
       case 'ocupado':
         return (
           <Badge variant="destructive">
-            <PhoneMissed className="w-3 h-3 mr-1" />
+            <PhoneMissed className="w-3 h-3" />
             Ocupado
           </Badge>
         );
@@ -43,45 +43,40 @@ export function DisparosVoz() {
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="page-container">
+      {/* Header */}
+      <div className="page-header">
         <div>
-          <h1 className="text-gray-900">Disparos Voz (CallBot)</h1>
-          <p className="text-gray-600">Histórico de chamadas automáticas</p>
+          <h1 className="page-title">Disparos Voz (CallBot)</h1>
+          <p className="page-description">Histórico de chamadas automáticas</p>
         </div>
-        <Button className="bg-blue-600 hover:bg-blue-700 gap-2">
+        <Button>
           <Phone className="w-4 h-4" />
           Nova Campanha
         </Button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-gray-600 text-sm">Total de Chamadas</p>
-            <p className="text-gray-900 mt-1">{stats.total}</p>
-          </CardContent>
+      {/* Stats Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        <Card className="stats-card">
+          <p className="stats-label">Total de Chamadas</p>
+          <p className="stats-value">{stats.total}</p>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-gray-600 text-sm">Atendidas</p>
-            <p className="text-green-600 mt-1">{stats.atendidas}</p>
-          </CardContent>
+        <Card className="stats-card">
+          <p className="stats-label">Atendidas</p>
+          <p className="stats-value text-success">{stats.atendidas}</p>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-gray-600 text-sm">Não Atendidas</p>
-            <p className="text-yellow-600 mt-1">{stats.naoAtendidas}</p>
-          </CardContent>
+        <Card className="stats-card">
+          <p className="stats-label">Não Atendidas</p>
+          <p className="stats-value text-warning">{stats.naoAtendidas}</p>
         </Card>
-        <Card>
-          <CardContent className="pt-6">
-            <p className="text-gray-600 text-sm">Duração Média</p>
-            <p className="text-blue-600 mt-1">{stats.duracaoMedia}</p>
-          </CardContent>
+        <Card className="stats-card">
+          <p className="stats-label">Duração Média</p>
+          <p className="stats-value text-primary">{stats.duracaoMedia}</p>
         </Card>
       </div>
 
+      {/* Table */}
       <Card>
         <CardHeader>
           <CardTitle>Histórico de Chamadas</CardTitle>
@@ -99,21 +94,30 @@ export function DisparosVoz() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {chamadas.map((chamada) => (
-                <TableRow key={chamada.id}>
-                  <TableCell>{chamada.destinatario}</TableCell>
-                  <TableCell>{chamada.telefone}</TableCell>
-                  <TableCell>{chamada.duracao}</TableCell>
-                  <TableCell>{chamada.data}</TableCell>
-                  <TableCell>{getStatusBadge(chamada.status)}</TableCell>
-                  <TableCell>
-                    <Button variant="outline" size="sm" className="gap-2" disabled={chamada.status !== 'atendida'}>
-                      <Volume2 className="w-4 h-4" />
-                      Ouvir
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {chamadas.length === 0 ? (
+                <TableEmpty
+                  colSpan={6}
+                  icon={Phone}
+                  title="Nenhuma chamada registrada"
+                  description="Inicie uma nova campanha de voz para ver o histórico aqui"
+                />
+              ) : (
+                chamadas.map((chamada) => (
+                  <TableRow key={chamada.id}>
+                    <TableCell className="font-medium">{chamada.destinatario}</TableCell>
+                    <TableCell className="font-mono text-sm">{chamada.telefone}</TableCell>
+                    <TableCell>{chamada.duracao}</TableCell>
+                    <TableCell className="text-text-secondary">{chamada.data}</TableCell>
+                    <TableCell>{getStatusBadge(chamada.status)}</TableCell>
+                    <TableCell>
+                      <Button variant="ghost" size="sm" disabled={chamada.status !== 'atendida'}>
+                        <Volume2 className="w-4 h-4" />
+                        Ouvir
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>

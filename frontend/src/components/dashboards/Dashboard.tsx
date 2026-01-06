@@ -3,6 +3,7 @@
  * Main dashboard using mock data from useDashboard hook.
  */
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
+import { Button } from '../ui/button';
 import { 
   TrendingUp, DollarSign, Users, Clock, 
   FileText, AlertTriangle, RefreshCcw, CheckCircle
@@ -19,10 +20,10 @@ export function Dashboard() {
 
   if (isLoading) {
     return (
-      <div className="p-6 flex items-center justify-center min-h-[400px]">
+      <div className="page-container flex items-center justify-center min-h-[400px]">
         <div className="flex flex-col items-center gap-4">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[var(--brand-primary)]" />
-          <p className="text-[var(--text-secondary)]">Carregando dashboard...</p>
+          <div className="animate-spin rounded-full h-12 w-12 border-2 border-primary border-t-transparent" />
+          <p className="text-text-secondary">Carregando dashboard...</p>
         </div>
       </div>
     );
@@ -30,19 +31,20 @@ export function Dashboard() {
 
   if (error) {
     return (
-      <div className="p-6">
-        <Card className="bg-[var(--bg-card)] border-[var(--brand-error)]">
-          <CardContent className="p-6 flex flex-col items-center gap-4">
-            <AlertTriangle className="w-12 h-12 text-[var(--brand-error)]" />
-            <p className="text-[var(--text-primary)]">Erro ao carregar dashboard</p>
-            <p className="text-[var(--text-secondary)] text-sm">{error}</p>
-            <button 
-              onClick={refetch}
-              className="px-4 py-2 bg-[var(--brand-primary)] text-white rounded-lg hover:bg-[var(--brand-primary-hover)] transition-colors flex items-center gap-2"
-            >
-              <RefreshCcw className="w-4 h-4" />
+      <div className="page-container">
+        <Card className="border-destructive">
+          <CardContent className="p-8 flex flex-col items-center gap-4">
+            <div className="w-16 h-16 rounded-full bg-destructive/10 flex items-center justify-center">
+              <AlertTriangle className="w-8 h-8 text-destructive" />
+            </div>
+            <div className="text-center">
+              <p className="text-foreground font-semibold">Erro ao carregar dashboard</p>
+              <p className="text-text-secondary text-sm mt-1">{error}</p>
+            </div>
+            <Button onClick={refetch} className="mt-2">
+              <RefreshCcw className="w-4 h-4 mr-2" />
               Tentar novamente
-            </button>
+            </Button>
           </CardContent>
         </Card>
       </div>
@@ -51,10 +53,12 @@ export function Dashboard() {
 
   if (!data) {
     return (
-      <div className="p-6">
-        <Card className="bg-[var(--bg-card)]">
-          <CardContent className="p-6 text-center">
-            <p className="text-[var(--text-secondary)]">Nenhum dado disponível</p>
+      <div className="page-container">
+        <Card>
+          <CardContent className="empty-state">
+            <FileText className="empty-state-icon" />
+            <p className="empty-state-title">Nenhum dado disponível</p>
+            <p className="empty-state-description">Não há dados de dashboard para exibir no momento.</p>
           </CardContent>
         </Card>
       </div>
@@ -127,42 +131,37 @@ export function Dashboard() {
   }));
 
   return (
-    <div className="p-6 space-y-6 bg-[var(--bg-primary)] transition-colors duration-300">
+    <div className="page-container">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="page-header">
         <div>
-          <h1 className="text-[var(--text-primary)] text-3xl transition-colors duration-300">Dashboard</h1>
-          <p className="text-[var(--text-secondary)] mt-1 transition-colors duration-300">
+          <h1 className="page-title">Dashboard</h1>
+          <p className="page-description">
             Visão geral da carteira de cobrança
           </p>
         </div>
-        <button 
-          onClick={refetch}
-          className="px-4 py-2 bg-[var(--bg-card)] border border-[var(--border-primary)] text-[var(--text-primary)] rounded-lg hover:bg-[var(--bg-secondary)] transition-colors flex items-center gap-2"
-        >
-          <RefreshCcw className="w-4 h-4" />
+        <Button variant="outline" onClick={refetch}>
+          <RefreshCcw className="w-4 h-4 mr-2" />
           Atualizar
-        </button>
+        </Button>
       </div>
 
       {/* KPIs */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
         {kpis.map((kpi, index) => {
           const Icon = kpi.icon;
           return (
-            <Card key={index} className="bg-[var(--bg-card)] border-[var(--border-primary)] transition-colors duration-300">
-              <CardContent className="p-6">
-                <div className="flex items-center justify-between mb-4">
-                  <div 
-                    className="w-12 h-12 rounded-lg flex items-center justify-center transition-colors duration-300" 
-                    style={{ backgroundColor: `${kpi.color}20` }}
-                  >
-                    <Icon className="w-6 h-6" style={{ color: kpi.color }} />
-                  </div>
+            <Card key={index} className="stats-card hover:shadow-md transition-all duration-200">
+              <div className="flex items-start justify-between">
+                <div 
+                  className="stats-icon" 
+                  style={{ backgroundColor: `${kpi.color}15` }}
+                >
+                  <Icon className="w-6 h-6" style={{ color: kpi.color }} />
                 </div>
-                <p className="text-[var(--text-secondary)] text-sm transition-colors duration-300">{kpi.label}</p>
-                <p className="text-[var(--text-primary)] text-2xl mt-1 font-semibold transition-colors duration-300">{kpi.value}</p>
-              </CardContent>
+              </div>
+              <p className="stats-label mt-4">{kpi.label}</p>
+              <p className="stats-value">{kpi.value}</p>
             </Card>
           );
         })}
@@ -171,11 +170,9 @@ export function Dashboard() {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Distribuição por Status */}
-        <Card className="bg-[var(--bg-card)] border-[var(--border-primary)] transition-colors duration-300">
+        <Card>
           <CardHeader>
-            <CardTitle className="text-[var(--text-primary)] transition-colors duration-300">
-              Distribuição por Status
-            </CardTitle>
+            <CardTitle>Distribuição por Status</CardTitle>
           </CardHeader>
           <CardContent>
             {pieData.length > 0 ? (

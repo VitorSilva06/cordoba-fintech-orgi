@@ -12,7 +12,7 @@ function Tabs({
   return (
     <TabsPrimitive.Root
       data-slot="tabs"
-      className={cn("flex flex-col gap-2", className)}
+      className={cn("flex flex-col gap-4", className)}
       {...props}
     />
   );
@@ -26,7 +26,9 @@ function TabsList({
     <TabsPrimitive.List
       data-slot="tabs-list"
       className={cn(
-        "bg-muted text-muted-foreground inline-flex h-9 w-fit items-center justify-center rounded-xl p-[3px] flex",
+        "inline-flex h-10 items-center justify-start gap-1 rounded-lg p-1",
+        "bg-secondary dark:bg-muted/50",
+        "border border-border",
         className,
       )}
       {...props}
@@ -42,7 +44,24 @@ function TabsTrigger({
     <TabsPrimitive.Trigger
       data-slot="tabs-trigger"
       className={cn(
-        "data-[state=active]:bg-card dark:data-[state=active]:text-foreground focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:outline-ring dark:data-[state=active]:border-input dark:data-[state=active]:bg-input/30 text-foreground dark:text-muted-foreground inline-flex h-[calc(100%-1px)] flex-1 items-center justify-center gap-1.5 rounded-xl border border-transparent px-2 py-1 text-sm font-medium whitespace-nowrap transition-[color,box-shadow] focus-visible:ring-[3px] focus-visible:outline-1 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
+        // Base
+        "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md px-3 py-1.5",
+        "text-sm font-medium text-text-secondary",
+        // Transition
+        "transition-all duration-200",
+        // Hover
+        "hover:text-foreground",
+        // Active state
+        "data-[state=active]:bg-card data-[state=active]:text-foreground",
+        "data-[state=active]:shadow-sm data-[state=active]:border data-[state=active]:border-border",
+        // Dark mode active
+        "dark:data-[state=active]:bg-card dark:data-[state=active]:text-foreground",
+        // Focus
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary/50",
+        // Disabled
+        "disabled:pointer-events-none disabled:opacity-50",
+        // Icons
+        "[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg]:w-4 [&_svg]:h-4",
         className,
       )}
       {...props}
@@ -57,7 +76,13 @@ function TabsContent({
   return (
     <TabsPrimitive.Content
       data-slot="tabs-content"
-      className={cn("flex-1 outline-none", className)}
+      className={cn(
+        "flex-1 outline-none",
+        "focus-visible:outline-none",
+        "data-[state=inactive]:hidden",
+        "animate-fade-in",
+        className,
+      )}
       {...props}
     />
   );

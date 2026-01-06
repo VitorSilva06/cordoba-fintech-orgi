@@ -2,8 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-@custom-variant dark (&:is(.dark *));
-
 /* ===========================
    LIGHT MODE (Default)
    =========================== */
@@ -50,32 +48,6 @@
   --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
   --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
   
-  /* Legacy Variables (compatibilidade) */
-  --font-size: 16px;
-  --background: #FFFFFF;
-  --foreground: #212529;
-  --card: #FFFFFF;
-  --card-foreground: #212529;
-  --popover: #FFFFFF;
-  --popover-foreground: #212529;
-  --primary: #004BFF;
-  --primary-foreground: #FFFFFF;
-  --secondary: #F8F9FA;
-  --secondary-foreground: #212529;
-  --muted: #F1F3F5;
-  --muted-foreground: #6C757D;
-  --accent: #00C08A;
-  --accent-foreground: #FFFFFF;
-  --destructive: #DC3545;
-  --destructive-foreground: #FFFFFF;
-  --border: #DEE2E6;
-  --input: #DEE2E6;
-  --input-background: #FFFFFF;
-  --switch-background: #E9ECEF;
-  --font-weight-medium: 500;
-  --font-weight-normal: 400;
-  --ring: #004BFF;
-  
   /* Paleta Córdoba para Gráficos */
   --chart-primary: #004BFF;
   --chart-success: #00C08A;
@@ -88,13 +60,6 @@
   --chart-text: #212529;
   --chart-tooltip-bg: #FFFFFF;
   --chart-tooltip-border: #004BFF;
-  
-  /* Variáveis antigas de chart para compatibilidade */
-  --chart-1: #004BFF;
-  --chart-2: #00C08A;
-  --chart-3: #FFAA00;
-  --chart-4: #DC3545;
-  --chart-5: #5b9bd5;
   
   --radius: 0.625rem;
   --sidebar: #0C1B33;
@@ -177,33 +142,26 @@
   --ring: #004BFF;
   
   /* Paleta Córdoba para Gráficos no modo dark */
-  --chart-primary: #004BFF;
-  --chart-success: #00C08A;
-  --chart-warning: #FFAA00;
-  --chart-danger: #ff4444;
+  --chart-primary: #4D8FFF;
+  --chart-success: #00E3A5;
+  --chart-warning: #FFB733;
+  --chart-danger: #F56565;
   --chart-info: #5b9bd5;
   --chart-neutral: #6C757D;
   --chart-bg: #1a2942;
   --chart-grid: #2a3f5f;
   --chart-text: #F8F9FA;
   --chart-tooltip-bg: #0C1B33;
-  --chart-tooltip-border: #004BFF;
-  
-  /* Variáveis antigas de chart para compatibilidade */
-  --chart-1: #004BFF;
-  --chart-2: #00C08A;
-  --chart-3: #FFAA00;
-  --chart-4: #ff4444;
-  --chart-5: #5b9bd5;
+  --chart-tooltip-border: #4D8FFF;
   
   --sidebar: #0C1B33;
   --sidebar-foreground: #F2F4F7;
-  --sidebar-primary: #004BFF;
+  --sidebar-primary: #4D8FFF;
   --sidebar-primary-foreground: #F2F4F7;
   --sidebar-accent: #1a2942;
   --sidebar-accent-foreground: #F2F4F7;
-  --sidebar-border: rgba(0, 75, 255, 0.3);
-  --sidebar-ring: #004BFF;
+  --sidebar-border: rgba(77, 143, 255, 0.3);
+  --sidebar-ring: #4D8FFF;
 }
 
 /* ===========================
@@ -214,23 +172,268 @@
     @apply border-border;
   }
   
+  html {
+    scroll-behavior: smooth;
+  }
+  
   body {
-    @apply bg-[var(--bg-primary)] text-[var(--text-primary)];
+    @apply bg-background text-foreground antialiased;
     font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+    transition: background-color 200ms ease, color 200ms ease;
   }
   
   h1, h2, h3, h4, h5, h6 {
-    @apply font-semibold text-[var(--text-primary)];
+    @apply font-semibold text-foreground tracking-tight;
   }
   
-  h1 { @apply text-4xl; }
-  h2 { @apply text-3xl; }
-  h3 { @apply text-2xl; }
-  h4 { @apply text-xl; }
-  h5 { @apply text-lg; }
-  h6 { @apply text-base; }
+  h1 { @apply text-4xl leading-tight; }
+  h2 { @apply text-3xl leading-tight; }
+  h3 { @apply text-2xl leading-snug; }
+  h4 { @apply text-xl leading-snug; }
+  h5 { @apply text-lg leading-normal; }
+  h6 { @apply text-base leading-normal; }
+  
+  p {
+    @apply leading-relaxed;
+  }
+}
+
+/* ===========================
+   COMPONENT CLASSES
+   =========================== */
+@layer components {
+  /* Page Container */
+  .page-container {
+    @apply p-4 md:p-6 lg:p-8 space-y-6;
+  }
+  
+  /* Page Header */
+  .page-header {
+    @apply flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4;
+  }
+  
+  .page-title {
+    @apply text-2xl md:text-3xl font-bold text-foreground;
+  }
+  
+  .page-description {
+    @apply text-text-secondary text-sm md:text-base mt-1;
+  }
+  
+  /* Card Variants */
+  .card-base {
+    @apply bg-card border border-border rounded-xl shadow-sm transition-all duration-200;
+  }
+  
+  .card-interactive {
+    @apply card-base hover:shadow-md hover:border-primary/30 cursor-pointer;
+  }
+  
+  /* Stats Card */
+  .stats-card {
+    @apply card-base p-6;
+  }
+  
+  .stats-icon {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center;
+  }
+  
+  .stats-label {
+    @apply text-text-secondary text-sm font-medium;
+  }
+  
+  .stats-value {
+    @apply text-foreground text-2xl font-bold mt-1;
+  }
+  
+  /* Form Elements */
+  .form-group {
+    @apply space-y-2;
+  }
+  
+  .form-label {
+    @apply block text-sm font-medium text-foreground;
+  }
+  
+  .form-input {
+    @apply w-full h-10 px-3 rounded-lg border border-border bg-card text-foreground
+           placeholder:text-text-muted
+           focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary
+           disabled:opacity-50 disabled:cursor-not-allowed
+           transition-all duration-200;
+  }
+  
+  /* Badge Variants - usando cores com transparência via estilos nativos */
+  .badge-status {
+    @apply inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+  
+  .badge-success {
+    @apply badge-status;
+    background-color: rgba(0, 192, 138, 0.15);
+    color: var(--success);
+  }
+  
+  .badge-warning {
+    @apply badge-status;
+    background-color: rgba(255, 170, 0, 0.15);
+    color: var(--warning);
+  }
+  
+  .badge-destructive {
+    @apply badge-status;
+    background-color: rgba(239, 68, 68, 0.15);
+    color: var(--destructive);
+  }
+  
+  .badge-primary {
+    @apply badge-status;
+    background-color: rgba(0, 75, 255, 0.15);
+    color: var(--primary);
+  }
+  
+  .badge-neutral {
+    @apply badge-status bg-secondary text-text-secondary;
+  }
+  
+  /* Empty State */
+  .empty-state {
+    @apply flex flex-col items-center justify-center py-12 px-4 text-center;
+  }
+  
+  .empty-state-icon {
+    @apply w-16 h-16 text-text-muted mb-4;
+  }
+  
+  .empty-state-title {
+    @apply text-lg font-medium text-foreground mb-2;
+  }
+  
+  .empty-state-description {
+    @apply text-text-secondary text-sm max-w-sm;
+  }
+  
+  /* Dropdown/Menu */
+  .dropdown-menu {
+    @apply bg-card border border-border rounded-lg shadow-lg p-1 min-w-[180px];
+  }
+  
+  .dropdown-item {
+    @apply flex items-center gap-2 px-3 py-2 text-sm text-foreground rounded-md
+           hover:bg-secondary cursor-pointer transition-colors;
+  }
+  
+  /* Custom Scrollbar */
+  .custom-scrollbar {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border-primary) transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar {
+    @apply w-2;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-track {
+    @apply bg-transparent;
+  }
+  
+  .custom-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-border rounded-full;
+  }
+
+  /* Avatar */
+  .avatar {
+    @apply relative inline-flex items-center justify-center overflow-hidden rounded-full;
+  }
+  
+  .avatar-sm { @apply w-8 h-8 text-xs; }
+  .avatar-md { @apply w-10 h-10 text-sm; }
+  .avatar-lg { @apply w-12 h-12 text-base; }
+  .avatar-xl { @apply w-16 h-16 text-lg; }
+
+  /* Status Indicator */
+  .status-indicator {
+    @apply w-2 h-2 rounded-full;
+  }
+  
+  .status-online { background-color: var(--success); }
+  .status-offline { background-color: var(--text-muted); }
+  .status-busy { background-color: var(--destructive); }
+  .status-away { background-color: var(--warning); }
+
+  /* Divider */
+  .divider {
+    @apply h-px w-full bg-border my-4;
+  }
+  
+  .divider-vertical {
+    @apply w-px h-full bg-border mx-2;
+  }
+
+  /* Loading Dots */
+  .loading-dots {
+    @apply flex items-center gap-1;
+  }
+  
+  .loading-dots span {
+    @apply w-2 h-2 rounded-full bg-primary animate-bounce;
+  }
+  
+  .loading-dots span:nth-child(2) { animation-delay: 0.1s; }
+  .loading-dots span:nth-child(3) { animation-delay: 0.2s; }
+
+  /* Metric Change Indicator */
+  .metric-up {
+    @apply text-success flex items-center gap-1;
+  }
+  
+  .metric-down {
+    @apply text-destructive flex items-center gap-1;
+  }
+  
+  .metric-neutral {
+    @apply text-text-muted flex items-center gap-1;
+  }
+
+  /* KPI Card Styles */
+  .kpi-icon {
+    @apply w-12 h-12 rounded-xl flex items-center justify-center transition-transform;
+  }
+  
+  .kpi-icon-primary { background-color: rgba(0, 75, 255, 0.15); color: var(--primary); }
+  .kpi-icon-success { background-color: rgba(0, 192, 138, 0.15); color: var(--success); }
+  .kpi-icon-warning { background-color: rgba(255, 170, 0, 0.15); color: var(--warning); }
+  .kpi-icon-destructive { background-color: rgba(239, 68, 68, 0.15); color: var(--destructive); }
+
+  /* Data Table Enhancements */
+  .table-sortable th {
+    @apply cursor-pointer select-none hover:bg-secondary/50 transition-colors;
+  }
+  
+  .table-striped tbody tr:nth-child(even) {
+    @apply bg-secondary/30;
+  }
+  
+  .table-hover tbody tr:hover {
+    @apply bg-secondary/50;
+  }
+
+  /* Notification Badge */
+  .notification-badge {
+    @apply absolute -top-1 -right-1 w-5 h-5 flex items-center justify-center
+           rounded-full text-xs font-bold text-white;
+    background-color: var(--destructive);
+  }
+
+  /* Action Bar */
+  .action-bar {
+    @apply flex items-center gap-2 p-3 rounded-lg bg-secondary border border-border;
+  }
+
+  /* Filter Group */
+  .filter-group {
+    @apply flex flex-wrap items-center gap-3 p-4 rounded-lg bg-card border border-border;
+  }
 }
 
 /* ===========================
@@ -240,4 +443,174 @@
   .text-balance {
     text-wrap: balance;
   }
+  
+  /* Gradient Text */
+  .gradient-text {
+    @apply bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent;
+  }
+  
+  /* Glass Effect */
+  .glass {
+    @apply bg-card/80 backdrop-blur-md border border-border/50;
+  }
+  
+  /* Focus Ring */
+  .focus-ring {
+    @apply focus:outline-none focus:ring-2 focus:ring-primary/50 focus:ring-offset-2 focus:ring-offset-background;
+  }
+
+  /* Truncate with ellipsis */
+  .truncate-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .truncate-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+  /* Hide scrollbar but keep functionality */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Aspect Ratios */
+  .aspect-card { aspect-ratio: 16 / 10; }
+  .aspect-banner { aspect-ratio: 21 / 9; }
+}
+
+/* ===========================
+   ANIMATIONS
+   =========================== */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slideInRight {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes slideInLeft {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes scaleIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+@keyframes pulse-soft {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes spin-slow {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  10%, 30%, 50%, 70%, 90% { transform: translateX(-4px); }
+  20%, 40%, 60%, 80% { transform: translateX(4px); }
+}
+
+@keyframes bounce-subtle {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-5px); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+
+/* Animation utilities */
+.animate-fade-in { animation: fadeIn 0.3s ease-out; }
+.animate-slide-up { animation: slideUp 0.3s ease-out; }
+.animate-slide-down { animation: slideDown 0.3s ease-out; }
+.animate-slide-in-right { animation: slideInRight 0.3s ease-out; }
+.animate-slide-in-left { animation: slideInLeft 0.3s ease-out; }
+.animate-scale-in { animation: scaleIn 0.2s ease-out; }
+.animate-pulse-soft { animation: pulse-soft 2s ease-in-out infinite; }
+.animate-shimmer { 
+  animation: shimmer 2s linear infinite;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.1), transparent);
+  background-size: 200% 100%;
+}
+.animate-spin-slow { animation: spin-slow 3s linear infinite; }
+.animate-shake { animation: shake 0.5s ease-in-out; }
+.animate-bounce-subtle { animation: bounce-subtle 2s ease-in-out infinite; }
+.animate-float { animation: float 3s ease-in-out infinite; }
+
+/* Staggered animations for lists */
+.stagger-animation > * {
+  animation: slideUp 0.3s ease-out forwards;
+  opacity: 0;
+}
+
+.stagger-animation > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-animation > *:nth-child(2) { animation-delay: 50ms; }
+.stagger-animation > *:nth-child(3) { animation-delay: 100ms; }
+.stagger-animation > *:nth-child(4) { animation-delay: 150ms; }
+.stagger-animation > *:nth-child(5) { animation-delay: 200ms; }
+.stagger-animation > *:nth-child(6) { animation-delay: 250ms; }
+.stagger-animation > *:nth-child(7) { animation-delay: 300ms; }
+.stagger-animation > *:nth-child(8) { animation-delay: 350ms; }
+
+/* Chart tooltip custom styles */
+.recharts-tooltip-wrapper {
+  outline: none !important;
+}
+
+.recharts-default-tooltip {
+  background-color: var(--bg-card) !important;
+  border: 1px solid var(--border-primary) !important;
+  border-radius: 8px !important;
+  box-shadow: var(--shadow-lg) !important;
+}
+
+.recharts-tooltip-label {
+  color: var(--text-primary) !important;
+  font-weight: 600 !important;
+}
+
+.recharts-tooltip-item {
+  color: var(--text-secondary) !important;
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.2s ease-out;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
 }

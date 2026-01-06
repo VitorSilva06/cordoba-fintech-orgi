@@ -2,12 +2,31 @@ import * as React from "react";
 
 import { cn } from "./utils";
 
-function Textarea({ className, ...props }: React.ComponentProps<"textarea">) {
+export interface TextareaProps extends React.ComponentProps<"textarea"> {
+  error?: boolean;
+}
+
+function Textarea({ className, error, ...props }: TextareaProps) {
   return (
     <textarea
       data-slot="textarea"
       className={cn(
-        "resize-none border-input placeholder:text-muted-foreground focus-visible:border-ring focus-visible:ring-ring/50 aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive dark:bg-input/30 flex field-sizing-content min-h-16 w-full rounded-md border bg-input-background px-3 py-2 text-base transition-[color,box-shadow] outline-none focus-visible:ring-[3px] disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
+        // Base styles
+        "flex min-h-24 w-full rounded-lg border px-3 py-2.5 text-sm",
+        // Colors
+        "bg-card dark:bg-card/50 text-foreground border-border",
+        // Placeholder
+        "placeholder:text-text-muted",
+        // Focus
+        "focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary",
+        // Disabled
+        "disabled:cursor-not-allowed disabled:opacity-50 disabled:bg-secondary",
+        // Resize
+        "resize-none",
+        // Transition
+        "transition-all duration-200",
+        // Error state
+        error && "border-destructive focus:ring-destructive/30 focus:border-destructive",
         className,
       )}
       {...props}

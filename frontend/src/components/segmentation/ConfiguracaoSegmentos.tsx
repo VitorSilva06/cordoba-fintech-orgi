@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '../ui/table';
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow, TableEmpty } from '../ui/table';
 import { Badge } from '../ui/badge';
-import { Edit, Trash2, Plus } from 'lucide-react';
+import { Edit, Trash2, Plus, Settings } from 'lucide-react';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '../ui/dialog';
 import { Input } from '../ui/input';
 import { Label } from '../ui/label';
@@ -18,15 +18,15 @@ export function ConfiguracaoSegmentos() {
   ]);
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="page-container">
+      <div className="page-header">
         <div>
-          <h1 className="text-gray-900">Configuração de Segmentos</h1>
-          <p className="text-gray-600">Defina as faixas de atraso e segmentos de cobrança</p>
+          <h1 className="page-title">Configuração de Segmentos</h1>
+          <p className="page-description">Defina as faixas de atraso e segmentos de cobrança</p>
         </div>
         <Dialog>
           <DialogTrigger asChild>
-            <Button className="bg-blue-600 hover:bg-blue-700 gap-2">
+            <Button>
               <Plus className="w-4 h-4" />
               Novo Segmento
             </Button>
@@ -50,7 +50,7 @@ export function ConfiguracaoSegmentos() {
                   <Input type="number" placeholder="30" />
                 </div>
               </div>
-              <Button className="w-full bg-blue-600 hover:bg-blue-700">Criar Segmento</Button>
+              <Button className="w-full">Criar Segmento</Button>
             </div>
           </DialogContent>
         </Dialog>
@@ -72,30 +72,39 @@ export function ConfiguracaoSegmentos() {
               </TableRow>
             </TableHeader>
             <TableBody>
-              {segmentos.map((segmento) => (
-                <TableRow key={segmento.id}>
-                  <TableCell>{segmento.nome}</TableCell>
-                  <TableCell>{segmento.faixaInicio} - {segmento.faixaFim} dias</TableCell>
-                  <TableCell>{segmento.quantidade} registros</TableCell>
-                  <TableCell>
-                    {segmento.ativo ? (
-                      <Badge className="bg-green-100 text-green-700 hover:bg-green-100">Ativo</Badge>
-                    ) : (
-                      <Badge variant="secondary">Inativo</Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-right">
-                    <div className="flex gap-2 justify-end">
-                      <Button variant="outline" size="sm">
-                        <Edit className="w-4 h-4" />
-                      </Button>
-                      <Button variant="outline" size="sm">
-                        <Trash2 className="w-4 h-4 text-red-600" />
-                      </Button>
-                    </div>
-                  </TableCell>
-                </TableRow>
-              ))}
+              {segmentos.length === 0 ? (
+                <TableEmpty
+                  colSpan={5}
+                  icon={Settings}
+                  title="Nenhum segmento configurado"
+                  description="Crie seu primeiro segmento para começar"
+                />
+              ) : (
+                segmentos.map((segmento) => (
+                  <TableRow key={segmento.id}>
+                    <TableCell className="font-medium">{segmento.nome}</TableCell>
+                    <TableCell>{segmento.faixaInicio} - {segmento.faixaFim} dias</TableCell>
+                    <TableCell>{segmento.quantidade.toLocaleString('pt-BR')} registros</TableCell>
+                    <TableCell>
+                      {segmento.ativo ? (
+                        <Badge variant="success">Ativo</Badge>
+                      ) : (
+                        <Badge variant="secondary">Inativo</Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex gap-2 justify-end">
+                        <Button variant="ghost" size="icon-sm">
+                          <Edit className="w-4 h-4" />
+                        </Button>
+                        <Button variant="ghost" size="icon-sm">
+                          <Trash2 className="w-4 h-4 text-destructive" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))
+              )}
             </TableBody>
           </Table>
         </CardContent>

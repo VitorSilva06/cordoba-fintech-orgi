@@ -1,6 +1,7 @@
 import { useState, useRef } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card";
 import { Button } from "../ui/button";
+import { Alert, AlertDescription } from "../ui/alert";
 import {
   Upload,
   FileSpreadsheet,
@@ -8,6 +9,7 @@ import {
   AlertCircle,
   Download,
   X,
+  Trash2,
 } from "lucide-react";
 import { Progress } from "../ui/progress";
 import { useUpload, UploadPreviewRow } from "@/hooks/useUpload";
@@ -26,8 +28,6 @@ type PreviewData = UploadPreviewRow;
 // HELPERS ==============================
 
 const validateEmail = (email: string) => email.includes("@");
-
-// validateRow helper removed (unused)
 
 const cleanFileName = (name: string) =>
   name.length > 40 ? name.slice(0, 37) + "..." : name;
@@ -127,40 +127,28 @@ export function UploadBase() {
   // UI ============================================================
 
   return (
-    <div className="space-y-6 p-4 md:p-6 animate-fade-in">
-      <div className="flex items-center justify-between">
-        <h1 className="text-3xl font-bold text-[--color-neon-blue]">
-          Upload de Base
-        </h1>
-
-        <Button
-          variant="outline"
-          onClick={resetAll}
-          className="text-[--color-accent-yellow] border-[--color-accent-yellow]"
-        >
+    <div className="page-container">
+      {/* Header */}
+      <div className="page-header">
+        <div>
+          <h1 className="page-title">Upload de Base</h1>
+          <p className="page-description">
+            Envie sua planilha para validar e importar
+          </p>
+        </div>
+        <Button variant="outline" onClick={resetAll}>
+          <Trash2 className="w-4 h-4" />
           Limpar Tudo
         </Button>
       </div>
 
-      <p className="text-[--color-neon-blue]/70">
-        Envie sua planilha para validar e importar.
-      </p>
-
-      <Card className="bg-[--color-card-bg] border-[--color-neon-blue]/20">
+      <Card>
         <CardHeader className="flex flex-row justify-between items-center">
-          <CardTitle className="text-[--color-accent-yellow]">
-            Carregar Arquivo
-          </CardTitle>
-
-          <Button
-            variant="outline"
-            onClick={downloadTemplate}
-            className="text-[--color-neon-blue] border-[--color-neon-blue]/30"
-          >
-            <Download className="w-4 h-4 mr-2" /> Template
+          <CardTitle>Carregar Arquivo</CardTitle>
+          <Button variant="outline" onClick={downloadTemplate}>
+            <Download className="w-4 h-4" />
+            Baixar Template
           </Button>
-
-          
         </CardHeader>
 
         <CardContent className="space-y-6">
@@ -172,17 +160,23 @@ export function UploadBase() {
               const f = e.dataTransfer.files[0];
               if (f) handleFile(f);
             }}
-            className="p-8 border-2 border-dashed border-[--color-neon-blue]/40 rounded-lg text-center cursor-pointer hover:border-[--color-neon-blue]"
+            className="p-8 border-2 border-dashed border-border rounded-xl text-center cursor-pointer hover:border-primary/50 hover:bg-secondary/30 transition-all duration-200"
           >
-            <Upload className="w-10 h-10 mx-auto mb-3 text-[--color-neon-blue]" />
-            <p className="text-[--color-neon-blue]">Arraste o arquivo aqui ou</p>
+            <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/10 flex items-center justify-center">
+              <Upload className="w-8 h-8 text-primary" />
+            </div>
+            <p className="text-foreground font-medium mb-2">
+              Arraste o arquivo aqui ou
+            </p>
             <Button
               variant="outline"
-              className="mt-2 border-[--color-accent-yellow] text-[--color-accent-yellow]"
               onClick={() => inputRef.current?.click()}
             >
               Selecionar Arquivo
             </Button>
+            <p className="text-text-muted text-sm mt-3">
+              Formatos aceitos: CSV, XLSX
+            </p>
 
             <input
               ref={inputRef}
@@ -199,39 +193,40 @@ export function UploadBase() {
 
           {/* FILE CARD */}
           {file && (
-            <Card className="bg-[--color-primary-dark] border-[--color-accent-yellow]/30 animate-fade-in">
-              <CardContent className="pt-6 space-y-4">
+            <Card className="border-primary/30 animate-fade-in">
+              <CardContent className="p-4 space-y-4">
                 <div className="flex justify-between items-center">
                   <div className="flex items-center gap-3">
-                    <FileSpreadsheet className="w-8 h-8 text-[--color-accent-yellow]" />
-
+                    <div className="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center">
+                      <FileSpreadsheet className="w-6 h-6 text-success" />
+                    </div>
                     <div>
-                      <p className="text-[--color-neon-blue]">
+                      <p className="text-foreground font-medium">
                         {cleanFileName(file.name)}
                       </p>
-                      <p className="text-[--color-neon-blue]/60 text-sm">
+                      <p className="text-text-secondary text-sm">
                         {fileSize(file.size)}
                       </p>
                     </div>
                   </div>
 
                   {!isUploading && !finished && (
-                    <X
+                    <Button
+                      variant="ghost"
+                      size="icon-sm"
                       onClick={() => setFile(null)}
-                      className="w-6 h-6 cursor-pointer text-[--color-neon-blue]/60 hover:text-[--color-neon-blue]"
-                    />
+                    >
+                      <X className="w-5 h-5" />
+                    </Button>
                   )}
                 </div>
 
                 {/* PROGRESS */}
                 {isUploading && (
                   <div>
-                    <Progress
-                      value={uploadProgress}
-                      className="h-2 bg-[--color-neon-blue]/20"
-                    />
-                    <p className="text-[--color-neon-blue]/80 text-sm mt-2">
-                      {uploadProgress}%
+                    <Progress value={uploadProgress} className="h-2" />
+                    <p className="text-text-secondary text-sm mt-2">
+                      Processando... {uploadProgress}%
                     </p>
                   </div>
                 )}
@@ -239,17 +234,11 @@ export function UploadBase() {
                 {/* BUTTONS */}
                 {!isUploading && !finished && (
                   <div className="flex gap-3">
-                    <Button
-                      className="bg-[--color-accent-yellow] text-[--color-dark-text] font-bold flex-1"
-                      onClick={startUpload}
-                    >
+                    <Button className="flex-1" onClick={startUpload}>
+                      <Upload className="w-4 h-4" />
                       Fazer Upload
                     </Button>
-                    <Button
-                      variant="outline"
-                      className="text-[--color-neon-blue] border-[--color-neon-blue]/40"
-                      onClick={() => setFile(null)}
-                    >
+                    <Button variant="outline" onClick={() => setFile(null)}>
                       Cancelar
                     </Button>
                   </div>
@@ -257,12 +246,12 @@ export function UploadBase() {
 
                 {/* SUCCESS */}
                 {finished && (
-                  <div className="p-3 border border-[--color-neon-blue]/40 rounded-lg bg-[--color-card-bg] flex gap-3">
-                    <CheckCircle className="text-[--color-neon-blue] w-6 h-6" />
-                    <p className="text-[--color-neon-blue]">
+                  <Alert variant="success">
+                    <AlertDescription className="flex items-center gap-2">
+                      <CheckCircle className="w-4 h-4" />
                       Upload concluído com sucesso!
-                    </p>
-                  </div>
+                    </AlertDescription>
+                  </Alert>
                 )}
               </CardContent>
             </Card>
@@ -272,112 +261,66 @@ export function UploadBase() {
           {finished && stats && (
             <div className="space-y-6 animate-fade-in">
               {/* STATS */}
-              <div className="grid grid-cols-3 gap-3">
-                {[
-                  { label: "Total", value: stats.total },
-                  { label: "Válidos", value: stats.valid },
-                  {
-                    label: "Inválidos",
-                    value: stats.invalid,
-                    color: "--color-accent-yellow",
-                  },
-                ].map((item, i) => (
-                  <div
-                    key={i}
-                    className="p-4 bg-[--color-card-bg] border border-[--color-neon-blue]/20 rounded-lg text-center"
-                  >
-                    <p className="text-[--color-neon-blue]/60 text-sm">
-                      {item.label}
-                    </p>
-                    <p
-                      className="text-2xl font-bold"
-                      style={{
-                        color: `var(${item.color ?? "--color-neon-blue"})`,
-                      }}
-                    >
-                      {item.value}
-                    </p>
-                  </div>
-                ))}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                <Card className="stats-card">
+                  <p className="stats-label">Total de Registros</p>
+                  <p className="stats-value">{stats.total}</p>
+                </Card>
+                <Card className="stats-card">
+                  <p className="stats-label">Válidos</p>
+                  <p className="stats-value text-success">{stats.valid}</p>
+                </Card>
+                <Card className="stats-card">
+                  <p className="stats-label">Inválidos</p>
+                  <p className="stats-value text-warning">{stats.invalid}</p>
+                </Card>
               </div>
 
               {/* TABLE */}
-              <Card className="bg-[--color-card-bg] border-[--color-neon-blue]/20">
+              <Card>
                 <CardHeader>
-                  <CardTitle className="text-[--color-accent-yellow]">
-                    Preview dos Dados
-                  </CardTitle>
+                  <CardTitle>Preview dos Dados</CardTitle>
                 </CardHeader>
 
                 <CardContent>
                   <Table>
                     <TableHeader>
                       <TableRow>
-                        <TableHead className="text-[--color-accent-yellow]">
-                          CPF
-                        </TableHead>
-                        <TableHead className="text-[--color-accent-yellow]">
-                          Nome
-                        </TableHead>
-                        <TableHead className="text-[--color-accent-yellow]">
-                          Telefone
-                        </TableHead>
-                        <TableHead className="text-[--color-accent-yellow]">
-                          Email
-                        </TableHead>
-                        <TableHead className="text-[--color-accent-yellow]">
-                          Valor
-                        </TableHead>
-                        <TableHead className="text-[--color-accent-yellow]">
-                          Data
-                        </TableHead>
-                        <TableHead className="text-[--color-accent-yellow]">
-                          Status
-                        </TableHead>
+                        <TableHead>CPF</TableHead>
+                        <TableHead>Nome</TableHead>
+                        <TableHead>Telefone</TableHead>
+                        <TableHead>Email</TableHead>
+                        <TableHead>Valor</TableHead>
+                        <TableHead>Vencimento</TableHead>
+                        <TableHead>Status</TableHead>
                       </TableRow>
                     </TableHeader>
 
                     <TableBody>
                       {preview.map((row, i) => (
                         <TableRow key={i}>
-                          <TableCell className="text-[--color-neon-blue]">
+                          <TableCell className="font-mono text-sm">
                             {row.cpf}
                           </TableCell>
-                          <TableCell className="text-[--color-neon-blue]">
-                            {row.nome}
-                          </TableCell>
-                          <TableCell className="text-[--color-neon-blue]">
-                            {row.telefone}
-                          </TableCell>
-
-                          <TableCell
-                            className={
-                              validateEmail(row.email)
-                                ? "text-[--color-neon-blue]"
-                                : "text-[--color-accent-yellow]"
-                            }
-                          >
+                          <TableCell>{row.nome}</TableCell>
+                          <TableCell>{row.telefone}</TableCell>
+                          <TableCell className={!validateEmail(row.email) ? "text-warning" : ""}>
                             {row.email}
                           </TableCell>
-
-                          <TableCell className="text-[--color-neon-blue]">
-                            {row.valor}
-                          </TableCell>
-
-                          <TableCell className="text-[--color-neon-blue]">
-                            {row.dataVencimento}
-                          </TableCell>
-
-                          <TableCell
-                            className={
-                              row.valido
-                                ? "text-green-400 font-bold"
-                                : "text-[--color-accent-yellow] font-bold"
-                            }
-                          >
-                            {row.valido
-                              ? "✔ Válido"
-                              : "✖ Inválido"}
+                          <TableCell>{row.valor}</TableCell>
+                          <TableCell>{row.dataVencimento}</TableCell>
+                          <TableCell>
+                            {row.valido ? (
+                              <span className="badge-success">
+                                <CheckCircle className="w-3 h-3" />
+                                Válido
+                              </span>
+                            ) : (
+                              <span className="badge-warning">
+                                <AlertCircle className="w-3 h-3" />
+                                Inválido
+                              </span>
+                            )}
                           </TableCell>
                         </TableRow>
                       ))}
@@ -386,13 +329,11 @@ export function UploadBase() {
 
                   {/* ERROR MESSAGE */}
                   {stats.invalid > 0 && (
-                    <div className="mt-4 p-3 bg-[--color-primary-dark] border border-[--color-accent-yellow]/40 rounded-lg flex gap-3">
-                      <AlertCircle className="text-[--color-accent-yellow] w-5 h-5" />
-                      <p className="text-[--color-accent-yellow] text-sm">
-                        {stats.invalid} registro(s) inválido(s)
-                        foram ignorados.
-                      </p>
-                    </div>
+                    <Alert variant="warning" className="mt-4">
+                      <AlertDescription>
+                        {stats.invalid} registro(s) inválido(s) foram encontrados e serão ignorados na importação.
+                      </AlertDescription>
+                    </Alert>
                   )}
                 </CardContent>
               </Card>

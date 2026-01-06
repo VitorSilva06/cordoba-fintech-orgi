@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Teste Login API</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        input, button { margin: 5px; padding: 10px; }
+        #result { margin-top: 20px; padding: 10px; background: #f0f0f0; white-space: pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1>Teste Login API</h1>
+    
+    <div>
+        <input type="email" id="email" placeholder="Email" value="teste@teste.com">
+        <input type="password" id="password" placeholder="Senha" value="senha123">
+        <button onclick="testarLogin()">Testar Login</button>
+    </div>
+    
+    <div id="result">Resultado aparecerá aqui...</div>
+
+    <script>
+        async function testarLogin() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const resultDiv = document.getElementById('result');
+            
+            resultDiv.innerHTML = 'Enviando requisição...';
+            
+            const formData = new URLSearchParams();
+            formData.append('username', email);
+            formData.append('password', password);
+            
+            try {
+                const response = await fetch('http://localhost:8000/auth/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (response.ok) {
+                    resultDiv.innerHTML = '✅ LOGIN OK!\n\n' + JSON.stringify(data, null, 2);
+                    localStorage.setItem('access_token', data.access_token);
+                } else {
+                    resultDiv.innerHTML = '❌ ERRO: ' + response.status + '\n\n' + JSON.stringify(data, null, 2);
+                }
+            } catch (error) {
+                resultDiv.innerHTML = '❌ ERRO DE REDE:\n\n' + error.message + '\n\nVerifique o console do navegador (F12) para mais detalhes.';
+                console.error('Erro completo:', error);
+            }
+        }
+    </script>
+</body>
+</html>

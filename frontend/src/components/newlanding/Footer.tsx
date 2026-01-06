@@ -79,7 +79,7 @@ export function Footer() {
           </div>
 
           {/* Right - Contact */}
-          <div className="text-center lg:text-left">
+          <div className="text-center lg:text-left" id="contato">
             <h4 className="text-[#004BFF] mb-6">CONTATO</h4>
             <ul className="space-y-3">
               <li className="flex items-start gap-2 justify-center lg:justify-start">

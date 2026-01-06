@@ -18,14 +18,11 @@ export function Navbar() {
             <a href="#home" className="text-white hover:text-[#00C08A] transition font-medium">
               HOME
             </a>
-            <a href="#login" className="text-white hover:text-[#00C08A] transition font-medium">
+            <a href="../login" className="text-white hover:text-[#00C08A] transition font-medium">
               LOGIN
             </a>
             <a href="#sobre" className="text-white hover:text-[#00C08A] transition font-medium">
               SOBRE
-            </a>
-            <a href="#start" className="text-white hover:text-[#00C08A] transition font-medium">
-              START
             </a>
             <a href="#solucoes" className="text-white hover:text-[#00C08A] transition font-medium">
               SOLUÇÕES
@@ -68,13 +65,6 @@ export function Navbar() {
               onClick={() => setIsOpen(false)}
             >
               SOBRE
-            </a>
-            <a
-              href="#start"
-              className="block text-white hover:text-[#00C08A] transition font-medium"
-              onClick={() => setIsOpen(false)}
-            >
-              START
             </a>
             <a
               href="#solucoes"
