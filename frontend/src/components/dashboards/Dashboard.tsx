@@ -1,7 +1,8 @@
 /**
  * Dashboard Component
- * Main dashboard using mock data from useDashboard hook.
+ * Main dashboard connected to real API.
  */
+import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '../ui/card';
 import { Button } from '../ui/button';
 import { 
@@ -13,10 +14,16 @@ import {
   XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Legend
 } from 'recharts';
 import { useDashboard, formatCurrency, formatNumber } from '../../hooks/useDashboard';
+import { TenantSelector } from './TenantSelector';
 import { chartColors, chartConfig } from '../../config/chartColors';
 
 export function Dashboard() {
-  const { data, isLoading, error, refetch } = useDashboard();
+  const [selectedTenantId, setSelectedTenantId] = useState<number | undefined>();
+  const { data, isLoading, error, refetch } = useDashboard({ tenantId: selectedTenantId });
+
+  const handleTenantChange = (tenantId?: number) => {
+    setSelectedTenantId(tenantId);
+  };
 
   if (isLoading) {
     return (
@@ -138,12 +145,23 @@ export function Dashboard() {
           <h1 className="page-title">Dashboard</h1>
           <p className="page-description">
             Visão geral da carteira de cobrança
+            {data?.tenant_nome && (
+              <span className="ml-2 text-[var(--brand-primary)] font-medium">
+                • {data.tenant_nome}
+              </span>
+            )}
           </p>
         </div>
-        <Button variant="outline" onClick={refetch}>
-          <RefreshCcw className="w-4 h-4 mr-2" />
-          Atualizar
-        </Button>
+        <div className="flex items-center gap-3">
+          <TenantSelector 
+            selectedTenantId={selectedTenantId} 
+            onTenantChange={handleTenantChange}
+          />
+          <Button variant="outline" onClick={refetch}>
+            <RefreshCcw className="w-4 h-4 mr-2" />
+            Atualizar
+          </Button>
+        </div>
       </div>
 
       {/* KPIs */}

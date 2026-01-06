@@ -17,6 +17,8 @@ export interface User {
   email: string;
   is_active: boolean;
   is_superuser: boolean;
+  role: 'operador' | 'gerente' | 'diretor';
+  tenant_id: number | null;
   created_at: string;
 }
 

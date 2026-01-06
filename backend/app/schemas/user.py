@@ -32,7 +32,16 @@ class UserResponse(BaseModel):
     email: EmailStr
     is_active: bool
     is_superuser: bool
+    role: str
+    tenant_id: Optional[int] = None
     created_at: Optional[datetime] = None
+
+    @field_validator("role", mode="before")
+    @classmethod
+    def serialize_role(cls, v):
+        if hasattr(v, "value"):
+            return v.value
+        return v
 
     class Config:
         from_attributes = True
