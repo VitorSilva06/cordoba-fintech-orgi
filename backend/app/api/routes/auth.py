@@ -63,3 +63,25 @@ def me(
     Retorna dados do usuário autenticado
     """
     return current_user
+
+
+@router.get("/me/access-status")
+def get_access_status(
+    current_user: User = Depends(get_current_user),
+):
+    """
+    Retorna o status de acesso do usuário aos dados.
+    
+    - Diretores: Sempre têm acesso global
+    - Usuários com tenant: Têm acesso ao tenant atribuído
+    - Usuários sem tenant: Não têm acesso a nenhum dado
+    """
+    has_access = current_user.is_diretor or current_user.tenant_id is not None
+    
+    return {
+        "has_data_access": has_access,
+        "is_director": current_user.is_diretor,
+        "tenant_id": current_user.tenant_id,
+        "role": current_user.role.value if hasattr(current_user.role, 'value') else current_user.role,
+        "message": None if has_access else "Você ainda não foi atribuído a nenhum tenant. Aguarde a atribuição pelo administrador para visualizar os dados."
+    }

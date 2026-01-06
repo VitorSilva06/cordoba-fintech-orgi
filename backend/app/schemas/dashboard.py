@@ -94,7 +94,7 @@ class ClienteRanking(BaseModel):
     cpf_mascarado: str
     valor_total: Decimal
     total_contratos: int
-    taxa_pontualidade: float
+    taxa_inadimplencia: float
 
 
 class PerfilDemografico(BaseModel):
@@ -141,9 +141,18 @@ class EvolucaoMensal(BaseModel):
     taxa_recuperacao: float
 
 
+class PerfilRisco(BaseModel):
+    """Nível de risco do cliente"""
+    nivel: str  # "Baixo", "Médio", "Alto"
+    descricao: str
+    percentual: float
+    quantidade: int
+
+
 class PropensaoPagamento(BaseModel):
     """Propensão ao pagamento (perfil de risco)"""
     evolucao_comportamento: List[EvolucaoMensal]
+    perfil_risco: List[PerfilRisco] = []
 
 
 class AnaliseClientePorFaixa(BaseModel):

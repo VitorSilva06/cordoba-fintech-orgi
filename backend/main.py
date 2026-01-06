@@ -11,8 +11,8 @@ from app.api.routes import (
     payments,
     communication,
     segmentation,
-    base
 )
+from app.api.routes import base_v2 as base
 
 from app.api.middlewares.logging import LoggingMiddleware
 from app.api.middlewares.rate_limit import RateLimitMiddleware
@@ -23,6 +23,7 @@ from app.db.session import engine
 
 # 🔹 IMPORTAR MODELS (OBRIGATÓRIO)
 from app.models import User  # noqa: F401
+from app.models.importacao_log import ImportacaoLog  # noqa: F401
 
 # -------------------------------------------------
 # Inicialização da aplicação

@@ -28,6 +28,14 @@ export interface RegisterData {
   password: string;
 }
 
+export interface AccessStatus {
+  has_data_access: boolean;
+  is_director: boolean;
+  tenant_id: number | null;
+  role: string;
+  message: string | null;
+}
+
 export const authService = {
   async login(credentials: LoginCredentials): Promise<LoginResponse> {
     const formData = new URLSearchParams();
@@ -52,6 +60,11 @@ export const authService = {
 
   async getCurrentUser(): Promise<User> {
     const response = await api.get<User>('/auth/me');
+    return response.data;
+  },
+
+  async getAccessStatus(): Promise<AccessStatus> {
+    const response = await api.get<AccessStatus>('/auth/me/access-status');
     return response.data;
   },
 

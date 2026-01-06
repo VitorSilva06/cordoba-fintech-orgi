@@ -83,7 +83,13 @@ export default {
           accent: 'var(--sidebar-accent)',
           'accent-foreground': 'var(--sidebar-accent-foreground)',
           border: 'var(--sidebar-border)',
-          ring: 'var(--sidebar-ring)'
+          ring: 'var(--sidebar-ring)',
+          muted: 'var(--sidebar-muted)'
+        },
+        
+        // Header
+        header: {
+          DEFAULT: 'var(--bg-header)',
         }
       },
       boxShadow: {

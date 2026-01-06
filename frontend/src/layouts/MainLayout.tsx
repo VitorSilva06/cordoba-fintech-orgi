@@ -1,6 +1,8 @@
 import { useState } from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
+import { useAuth } from '../contexts/AuthContext';
+import { NoAccessMessage } from '../components/ui/NoAccessMessage';
 import { Dashboard } from '../components/dashboards/Dashboard';
 import { DashboardDiretor } from '../components/dashboards/DashboardDiretor';
 import { DashboardGerente } from '../components/dashboards/DashboardGerente';
@@ -25,11 +27,34 @@ import { PainelConciliacao } from '../components/payments/PainelConciliacao';
 type UserProfile = 'Diretor' | 'Gerente' | 'Operador' | 'Cliente';
 
 export function MainLayout() {
+  const { user, hasDataAccess, accessStatus } = useAuth();
   const [activeScreen, setActiveScreen] = useState('dashboard');
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [userProfile] = useState<UserProfile>('Diretor');
+  
+  // Determina o perfil baseado no role do usuário logado
+  const getUserProfile = (): UserProfile => {
+    if (!user) return 'Operador';
+    switch (user.role) {
+      case 'diretor': return 'Diretor';
+      case 'gerente': return 'Gerente';
+      case 'operador': return 'Operador';
+      default: return 'Operador';
+    }
+  };
+  
+  const userProfile = getUserProfile();
 
   const renderContent = () => {
+    // Se usuário não tem acesso a dados (não está atribuído a tenant e não é diretor)
+    if (!hasDataAccess) {
+      return (
+        <NoAccessMessage 
+          userName={user?.email} 
+          message={accessStatus?.message || undefined}
+        />
+      );
+    }
+
     switch (activeScreen) {
       case 'dashboard':
         return <Dashboard />;
@@ -98,7 +123,7 @@ export function MainLayout() {
         <Header 
           userProfile={userProfile}
           onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
-          userName="Usuário Demo"
+          userName={user?.email || 'Carregando...'}
         />
         <main className="flex-1 overflow-auto bg-background transition-colors duration-200">
           <div className="animate-fade-in">

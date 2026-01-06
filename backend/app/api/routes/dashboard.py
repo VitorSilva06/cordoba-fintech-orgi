@@ -52,6 +52,24 @@ def dashboard_principal_consolidado(
 
 
 # ----------------------------------
+# Dashboard de Análise de Clientes
+# ----------------------------------
+@router.get("/analise-clientes", response_model=DashboardAnaliseClientes)
+def dashboard_analise_clientes(
+    tenant_filter: TenantFilter = Depends(get_tenant_filter),
+    db: Session = Depends(get_db),
+):
+    """
+    Dashboard de Análise de Clientes com métricas demográficas e comportamentais.
+    
+    - Operadores/Gerentes: Veem apenas dados do seu tenant
+    - Diretores: Precisam especificar tenant_id via query param ou veem consolidado
+    """
+    service = DashboardService(db)
+    return service.get_dashboard_analise_clientes(tenant_filter.tenant_id)
+
+
+# ----------------------------------
 # Dashboard por Tenant (para diretores)
 # ----------------------------------
 @router.get("/tenants")

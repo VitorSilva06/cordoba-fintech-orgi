@@ -3,10 +3,34 @@
  * Conecta com a API real de dashboards multi-tenant
  */
 import { useState, useEffect, useCallback } from 'react';
-import { dashboardService, DashboardPrincipal, TenantOverview } from '../services/dashboardService';
+import { 
+  dashboardService, 
+  DashboardPrincipal, 
+  DashboardAnaliseClientes,
+  TenantOverview 
+} from '../services/dashboardService';
 
 // Re-export types for components
-export type { DashboardPrincipal, TenantOverview, FaixaAtraso, DistribuicaoStatus, TopDevedor } from '../services/dashboardService';
+export type { 
+  DashboardPrincipal, 
+  DashboardAnaliseClientes,
+  TenantOverview, 
+  FaixaAtraso, 
+  DistribuicaoStatus, 
+  TopDevedor,
+  DistribuicaoFaixaEtaria,
+  DistribuicaoSexo,
+  ClienteRanking,
+  PerfilDemografico,
+  PontualidadePagamento,
+  DistribuicaoReincidencia,
+  PerfilComportamental,
+  InadimplenciaPorFaixa,
+  EvolucaoMensal,
+  PerfilRisco,
+  PropensaoPagamento,
+  AnaliseClientePorFaixa,
+} from '../services/dashboardService';
 
 // Interface adaptada para manter compatibilidade com o componente Dashboard existente
 export interface DashboardData {
@@ -221,6 +245,68 @@ export function formatNumber(value: number): string {
 
 export function formatPercent(value: number): string {
   return `${value.toFixed(1)}%`;
+}
+
+/**
+ * Hook para Dashboard de Análise de Clientes
+ */
+interface UseAnaliseClientesOptions {
+  tenantId?: number;
+}
+
+interface UseAnaliseClientesReturn {
+  data: DashboardAnaliseClientes | null;
+  isLoading: boolean;
+  error: string | null;
+  refetch: () => Promise<void>;
+}
+
+export function useAnaliseClientes(options: UseAnaliseClientesOptions = {}): UseAnaliseClientesReturn {
+  const { tenantId } = options;
+  
+  const [data, setData] = useState<DashboardAnaliseClientes | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchData = useCallback(async () => {
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      const apiData = await dashboardService.getDashboardAnaliseClientes(tenantId);
+      setData(apiData);
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Erro ao carregar análise de clientes';
+      
+      if (typeof err === 'object' && err !== null && 'response' in err) {
+        const axiosError = err as { response?: { status?: number; data?: { detail?: string } } };
+        if (axiosError.response?.status === 401) {
+          setError('Sessão expirada. Faça login novamente.');
+        } else if (axiosError.response?.status === 403) {
+          setError('Você não tem permissão para acessar esses dados.');
+        } else {
+          setError(axiosError.response?.data?.detail || errorMessage);
+        }
+      } else {
+        setError(errorMessage);
+      }
+      
+      setData(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [tenantId]);
+
+  useEffect(() => {
+    fetchData();
+  }, [fetchData]);
+
+  return {
+    data,
+    isLoading,
+    error,
+    refetch: fetchData,
+  };
 }
 
 export default useDashboard;

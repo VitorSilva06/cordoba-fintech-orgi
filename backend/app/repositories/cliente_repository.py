@@ -110,3 +110,138 @@ class ClienteRepository:
         
         result = query.scalar()
         return float(result) if result else 0.0
+
+    def get_distribuicao_faixa_etaria(self, tenant_id: Optional[int] = None) -> List[dict]:
+        """Retorna distribuição de clientes por faixa etária"""
+        from sqlalchemy import case, extract
+        from datetime import date
+        
+        # Calcula idade
+        idade_expr = extract('year', func.current_date()) - extract('year', Cliente.data_nascimento)
+        
+        # Faixas etárias
+        faixa_case = case(
+            (idade_expr < 25, '18-24'),
+            (idade_expr < 35, '25-34'),
+            (idade_expr < 45, '35-44'),
+            (idade_expr < 55, '45-54'),
+            (idade_expr < 65, '55-64'),
+            else_='65+'
+        )
+        
+        query = self.db.query(
+            faixa_case.label('faixa'),
+            func.count(Cliente.id).label('quantidade')
+        ).filter(Cliente.data_nascimento.isnot(None))
+        
+        if tenant_id:
+            query = query.filter(Cliente.tenant_id == tenant_id)
+        
+        result = query.group_by(faixa_case).all()
+        
+        # Total para calcular percentual
+        total = sum(r.quantidade for r in result) or 1
+        
+        # Ordenar as faixas
+        ordem_faixas = ['18-24', '25-34', '35-44', '45-54', '55-64', '65+']
+        data = []
+        for faixa in ordem_faixas:
+            qtd = next((r.quantidade for r in result if r.faixa == faixa), 0)
+            data.append({
+                'faixa': faixa,
+                'quantidade': qtd,
+                'percentual': round((qtd / total) * 100, 2)
+            })
+        
+        return data
+
+    def get_distribuicao_sexo(self, tenant_id: Optional[int] = None) -> List[dict]:
+        """Retorna distribuição de clientes por sexo"""
+        query = self.db.query(
+            Cliente.sexo,
+            func.count(Cliente.id).label('quantidade')
+        )
+        if tenant_id:
+            query = query.filter(Cliente.tenant_id == tenant_id)
+        
+        result = query.group_by(Cliente.sexo).all()
+        total = sum(r.quantidade for r in result) or 1
+        
+        return [
+            {
+                'sexo': 'Masculino' if r.sexo and r.sexo.value == 'M' else ('Feminino' if r.sexo and r.sexo.value == 'F' else 'Não informado'),
+                'quantidade': r.quantidade,
+                'percentual': round((r.quantidade / total) * 100, 2)
+            }
+            for r in result
+        ]
+
+    def get_top_maior_inadimplencia(self, tenant_id: Optional[int] = None, limit: int = 5) -> List[dict]:
+        """Retorna top clientes com maior inadimplência"""
+        from app.models.contrato import Contrato, StatusContrato
+        
+        query = self.db.query(
+            Cliente.nome,
+            Cliente.cpf,
+            func.sum(Contrato.valor_original).label('valor_total'),
+            func.count(Contrato.id).label('total_contratos'),
+        ).join(
+            Contrato, Cliente.id == Contrato.cliente_id
+        ).filter(
+            Contrato.status == StatusContrato.ATRASADO
+        )
+        
+        if tenant_id:
+            query = query.filter(Cliente.tenant_id == tenant_id)
+        
+        result = query.group_by(
+            Cliente.id, Cliente.nome, Cliente.cpf
+        ).order_by(
+            func.sum(Contrato.valor_original).desc()
+        ).limit(limit).all()
+        
+        return [
+            {
+                'nome': r.nome,
+                'cpf_mascarado': f"***.***.{r.cpf[-7:]}" if r.cpf and len(r.cpf) >= 7 else "***.***.***-**",
+                'valor_total': float(r.valor_total or 0),
+                'total_contratos': r.total_contratos,
+                'taxa_inadimplencia': 100.0  # Todos aqui são inadimplentes
+            }
+            for r in result
+        ]
+
+    def get_top_melhor_comportamento(self, tenant_id: Optional[int] = None, limit: int = 5) -> List[dict]:
+        """Retorna top clientes com melhor comportamento (pagam em dia)"""
+        from app.models.contrato import Contrato, StatusContrato
+        
+        query = self.db.query(
+            Cliente.nome,
+            Cliente.cpf,
+            func.sum(Contrato.valor_original).label('valor_total'),
+            func.count(Contrato.id).label('total_contratos'),
+        ).join(
+            Contrato, Cliente.id == Contrato.cliente_id
+        ).filter(
+            Contrato.status == StatusContrato.PAGO
+        )
+        
+        if tenant_id:
+            query = query.filter(Cliente.tenant_id == tenant_id)
+        
+        result = query.group_by(
+            Cliente.id, Cliente.nome, Cliente.cpf
+        ).order_by(
+            func.count(Contrato.id).desc()
+        ).limit(limit).all()
+        
+        return [
+            {
+                'nome': r.nome,
+                'cpf_mascarado': f"***.***.{r.cpf[-7:]}" if r.cpf and len(r.cpf) >= 7 else "***.***.***-**",
+                'valor_total': float(r.valor_total or 0),
+                'total_contratos': r.total_contratos,
+                'taxa_inadimplencia': 0.0  # Todos aqui são bons pagadores
+            }
+            for r in result
+        ]
