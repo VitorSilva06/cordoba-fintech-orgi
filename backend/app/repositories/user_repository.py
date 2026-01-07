@@ -1,10 +1,8 @@
 from typing import Optional, List
 
 from sqlalchemy.orm import Session
-from fastapi import HTTPException, status
 
 from app.models.user import User
-from app.core.security import get_password_hash
 from app.schemas.user import UserCreate
 
 
@@ -47,21 +45,25 @@ class UserRepository:
     # ----------------------------------
     # Escrita
     # ----------------------------------
-    def create(self, user_in: UserCreate) -> User:
-        try:
-            hashed_password = get_password_hash(user_in.password)
-        except ValueError as exc:
-            raise HTTPException(
-                status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
-                detail=str(exc),
-            )
-
+    def create(
+        self,
+        *,
+        name: str,
+        email: str,
+        hashed_password: str,
+        tenant_id: Optional[int] = None,
+        role=None,
+        is_active: bool = True,
+        is_superuser: bool = False,
+    ) -> User:
         user = User(
-            name=user_in.name,
-            email=user_in.email,
+            name=name,
+            email=email,
             hashed_password=hashed_password,
-            is_active=True,
-            is_superuser=False,
+            tenant_id=tenant_id,
+            role=role,
+            is_active=is_active,
+            is_superuser=is_superuser,
         )
 
         self.db.add(user)

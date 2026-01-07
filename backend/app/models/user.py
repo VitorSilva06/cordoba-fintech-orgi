@@ -2,12 +2,12 @@ from sqlalchemy import Column, Integer, String, Boolean, DateTime, ForeignKey, E
 from sqlalchemy.sql import func
 from sqlalchemy.orm import relationship
 import enum
+from uuid6 import uuid7
 
 from app.db.base import Base
 
 
 class UserRole(str, enum.Enum):
-    """Cargos disponíveis no sistema"""
     OPERADOR = "operador"
     GERENTE = "gerente"
     DIRETOR = "diretor"
@@ -19,15 +19,20 @@ class User(Base):
     # ----------------------------------
     # Identificação
     # ----------------------------------
-    id = Column(Integer, primary_key=True, index=True)
+    id = Column(
+        String(36),
+        primary_key=True,
+        default=lambda: str(uuid7()),
+        index=True
+    )
 
     # ----------------------------------
     # Tenant (Multi-tenancy)
     # ----------------------------------
     tenant_id = Column(
-        Integer, 
+        Integer,
         ForeignKey("tenants.id", ondelete="SET NULL"),
-        nullable=True,  # NULL para diretores (acesso global)
+        nullable=True,
         index=True
     )
 
@@ -46,12 +51,17 @@ class User(Base):
     # Permissões / Status
     # ----------------------------------
     role = Column(
-        Enum(UserRole),
+        Enum(
+            UserRole,
+            values_callable=lambda enum_cls: [e.value for e in enum_cls],
+            name="userrole",
+        ),
         default=UserRole.OPERADOR,
-        nullable=False
+        nullable=False,
     )
-    is_active = Column(Boolean, default=True)
-    is_superuser = Column(Boolean, default=False)
+
+    is_active = Column(Boolean, default=True, nullable=False)
+    is_superuser = Column(Boolean, default=False, nullable=False)
 
     # ----------------------------------
     # Auditoria
@@ -73,7 +83,6 @@ class User(Base):
 
     @property
     def is_diretor(self) -> bool:
-        """Verifica se o usuário é diretor (acesso global)"""
         return self.role == UserRole.DIRETOR
 
     def __repr__(self) -> str:

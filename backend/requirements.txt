@@ -23,6 +23,7 @@ cryptography==46.0.3
 dnspython==2.8.0
 ecdsa==0.19.1
 email-validator==2.1.0
+et_xmlfile==2.0.0
 fastapi==0.109.0
 flake8==7.0.0
 frozenlist==1.8.0
@@ -43,7 +44,9 @@ multidict==6.7.0
 mypy==1.8.0
 mypy_extensions==1.1.0
 numpy==2.4.0
+openpyxl==3.1.5
 packaging==25.0
+pandas==2.3.3
 passlib==1.7.4
 pathspec==0.12.1
 platformdirs==4.5.1
@@ -75,14 +78,11 @@ SQLAlchemy==2.0.25
 starlette==0.35.1
 typing_extensions==4.15.0
 tzdata==2025.3
-uuid7==0.1.0
+uuid6==2025.0.1
 uvicorn==0.27.0
-# uvloop==0.22.1
+uvloop==0.22.1
 vine==5.1.0
 watchfiles==1.1.1
 wcwidth==0.2.14
 websockets==15.0.1
 yarl==1.22.0
-
-pandas>=2.0.0
-openpyxl>=3.1.0

@@ -2,6 +2,7 @@ from pydantic import BaseModel, Field, field_validator
 from pydantic.networks import EmailStr
 from typing import Optional
 from datetime import datetime
+from app.models.user import UserRole
 
 
 # ----------------------------------
@@ -11,6 +12,8 @@ class UserCreate(BaseModel):
     name: str = Field(..., min_length=2, max_length=255)
     email: EmailStr
     password: str = Field(..., min_length=6, max_length=72)
+    tenant_id: Optional[int] = None
+    role: Optional[UserRole] = UserRole.OPERADOR
 
     @field_validator("password")
     @classmethod
@@ -27,7 +30,7 @@ class UserCreate(BaseModel):
 # Schema de resposta de usuário
 # ----------------------------------
 class UserResponse(BaseModel):
-    id: int
+    id: str
     name: str
     email: EmailStr
     is_active: bool

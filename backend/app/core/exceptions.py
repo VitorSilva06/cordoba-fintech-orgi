@@ -1,12 +1,19 @@
-from fastapi import FastAPI, Request
+from fastapi import FastAPI, Request, HTTPException, status
 from fastapi.responses import JSONResponse
-from fastapi import HTTPException, status
 
+
+# ======================================================
+# EXCEÇÃO BASE DA APLICAÇÃO
+# ======================================================
 
 class AppException(HTTPException):
     def __init__(self, status_code: int, detail: str):
         super().__init__(status_code=status_code, detail=detail)
 
+
+# ======================================================
+# EXCEÇÕES HTTP PADRÃO
+# ======================================================
 
 class BadRequestException(AppException):
     def __init__(self, detail: str = "Requisição inválida"):
@@ -45,6 +52,21 @@ class RateLimitExceededException(AppException):
 class ExternalServiceException(AppException):
     def __init__(self, detail: str = "Falha em serviço externo"):
         super().__init__(status.HTTP_502_BAD_GATEWAY, detail)
+
+
+# ======================================================
+# EXCEÇÕES DE AUTENTICAÇÃO
+# ======================================================
+
+class AuthenticationError(UnauthorizedException):
+    """
+    Erro específico de autenticação:
+    - credenciais inválidas
+    - token expirado
+    - token malformado
+    """
+    def __init__(self, detail: str = "Credenciais inválidas"):
+        super().__init__(detail=detail)
 
 
 # ======================================================
