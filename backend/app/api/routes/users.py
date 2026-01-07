@@ -32,7 +32,7 @@ def create_user(
             detail="Email já cadastrado",
         )
 
-    # Criação do usuário (hash da senha ocorre no repositório)
+    
     return user_repo.create(user_in)
 
 
